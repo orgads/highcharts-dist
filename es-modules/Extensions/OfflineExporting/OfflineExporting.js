@@ -19,8 +19,7 @@ import { downloadURL, getScript } from '../../Shared/DownloadURL.js';
 import G from '../../Core/Globals.js';
 const { composed, doc, win } = G;
 import OfflineExportingDefaults from './OfflineExportingDefaults.js';
-import U from '../../Core/Utilities.js';
-const { addEvent, extend, pushUnique } = U;
+import { addEvent, extend, pushUnique } from '../../Shared/Utilities.js';
 /* *
  *
  *  Composition

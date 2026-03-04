@@ -367,6 +367,17 @@ var AxisDefaults;
          * @apioption xAxis.crosshair.label.style
          */
         /**
+         * The number of milliseconds to wait until the crosshair is shown when
+         * the mouse is over a point. Works on initial hover.
+         *
+         * @sample {highcharts|highstock} highcharts/tooltip/showdelay/
+         *
+         * @type      {number}
+         * @default   0
+         * @since     next
+         * @apioption xAxis.crosshair.showDelay
+         */
+        /**
          * Whether the crosshair should snap to the point or follow the pointer
          * independent of points.
          *
@@ -884,6 +895,8 @@ var AxisDefaults;
              *         Linked category names
              * @sample {highcharts} highcharts/xaxis/labels-format-custom/
              *         Custom number format
+             * @sample {highstock} stock/xaxis/labels-format/
+             *         Added units on Y axis
              *
              * @type      {string}
              * @since     3.0

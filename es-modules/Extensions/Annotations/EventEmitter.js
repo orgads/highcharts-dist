@@ -11,8 +11,7 @@
 'use strict';
 import H from '../../Core/Globals.js';
 const { doc, isTouchDevice } = H;
-import U from '../../Core/Utilities.js';
-const { addEvent, fireEvent, objectEach, pick, removeEvent } = U;
+import { addEvent, fireEvent, objectEach, pick, removeEvent } from '../../Shared/Utilities.js';
 /* *
  *
  *  Class

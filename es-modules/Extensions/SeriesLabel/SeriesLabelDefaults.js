@@ -135,4 +135,5 @@ const SeriesLabelDefaults = {
  *  Default Export
  *
  * */
+/** @internal */
 export default SeriesLabelDefaults;

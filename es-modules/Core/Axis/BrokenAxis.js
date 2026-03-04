@@ -10,8 +10,7 @@
  * */
 'use strict';
 import StackItem from './Stacking/StackItem.js';
-import U from '../Utilities.js';
-const { addEvent, find, fireEvent, isArray, isNumber, pick } = U;
+import { addEvent, find, fireEvent, isArray, isNumber, pick } from '../../Shared/Utilities.js';
 /* *
  *
  *  Composition

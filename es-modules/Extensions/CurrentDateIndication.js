@@ -12,8 +12,7 @@
 'use strict';
 import H from '../Core/Globals.js';
 const { composed } = H;
-import U from '../Core/Utilities.js';
-const { addEvent, merge, pushUnique, wrap } = U;
+import { addEvent, merge, pushUnique, wrap } from '../Shared/Utilities.js';
 /* *
  *
  *  Constants

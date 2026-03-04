@@ -7,8 +7,7 @@ import Annotation from '../Annotation.js';
 import ControlPoint from '../ControlPoint.js';
 import D from '../../../Core/Defaults.js';
 const { defaultOptions } = D;
-import U from '../../../Core/Utilities.js';
-const { defined, extend, isNumber, merge, pick } = U;
+import { defined, extend, isNumber, merge, pick } from '../../../Shared/Utilities.js';
 if (defaultOptions.annotations?.types) {
     /**
      * Options for the measure annotation type.

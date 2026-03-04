@@ -13,8 +13,7 @@ import A from '../Animation/AnimationUtilities.js';
 const { getDeferredAnimation } = A;
 import F from '../Templating.js';
 const { format } = F;
-import U from '../Utilities.js';
-const { defined, extend, fireEvent, getAlignFactor, isArray, isString, merge, objectEach, pick, pInt, splat } = U;
+import { defined, extend, fireEvent, getAlignFactor, isArray, isString, merge, objectEach, pick, pInt, splat } from '../../Shared/Utilities.js';
 /* *
  *
  *  Composition

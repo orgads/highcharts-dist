@@ -9,8 +9,8 @@
  *
  * */
 'use strict';
-import U from './Utilities.js';
-const { diffObjects, extend, find, merge, pick, uniqueKey } = U;
+import { diffObjects, extend, find, merge, pick } from '../Shared/Utilities.js';
+import { uniqueKey } from './Utilities.js';
 /* *
  *
  *  Composition

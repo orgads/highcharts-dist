@@ -14,8 +14,7 @@ import H from './Globals.js';
 const { isTouchDevice } = H;
 import Palettes from './Color/Palettes.js';
 import Time from './Time.js';
-import U from './Utilities.js';
-const { fireEvent, merge } = U;
+import { fireEvent, merge } from '../Shared/Utilities.js';
 /* *
  *
  *  API Options
@@ -990,6 +989,9 @@ const defaultOptions = {
          * columns. Setting this to `false` makes room for more items, but will
          * look more messy.
          *
+         * @sample highcharts/legend/aligncolumns
+         *         Align columns
+         *
          * @since 6.1.0
          */
         alignColumns: true,
@@ -1119,6 +1121,9 @@ const defaultOptions = {
          * A [format string](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
          * for each legend label. Available variables relates to properties on
          * the series, or the point in case of pies.
+         *
+         * @sample {highcharts} highcharts/legend/labelformat/
+         *         Add text
          *
          * @type      {string}
          * @default   {name}
@@ -2301,6 +2306,15 @@ const defaultOptions = {
          * @since 3.0
          */
         hideDelay: 500,
+        /**
+         * The number of milliseconds to wait until the tooltip is shown when
+         * mouse over a point. Works on initial hover.
+         *
+         * @sample {highcharts|highstock} highcharts/tooltip/showdelay/
+         *
+         * @since next
+         */
+        showDelay: 0,
         /**
          * Padding inside the tooltip, in pixels.
          *

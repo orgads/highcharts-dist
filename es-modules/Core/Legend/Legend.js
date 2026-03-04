@@ -21,8 +21,7 @@ import R from '../Renderer/RendererUtilities.js';
 const { distribute } = R;
 import T from '../Templating.js';
 const { format } = T;
-import U from '../Utilities.js';
-const { addEvent, createElement, css, defined, discardElement, find, fireEvent, isNumber, merge, pick, pushUnique, relativeLength, stableSort, syncTimeout } = U;
+import { addEvent, createElement, css, defined, discardElement, find, fireEvent, isNumber, merge, pick, pushUnique, relativeLength, stableSort, syncTimeout } from '../../Shared/Utilities.js';
 /* *
  *
  *  Class
@@ -1339,15 +1338,11 @@ export default Legend;
 * @type {"legendItemClick"}
 */
 /**
- * Series color as used by the legend and some series types.
- * @name Highcharts.Series#color
- * @type {Highcharts.ColorType|undefined}
- */ /**
-* Legend data for the series.
-* @name Highcharts.Series#legendItem
-* @type {Highcharts.LegendItemObject|undefined}
-* @since 10.3.0
-*/
+ * Legend data for the series.
+ * @name Highcharts.Series#legendItem
+ * @type {Highcharts.LegendItemObject|undefined}
+ * @since 10.3.0
+ */
 /**
  * Gets fired when the legend item belonging to a series is clicked. The default
  * action is to toggle the visibility of the series. This can be prevented by

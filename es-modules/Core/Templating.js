@@ -13,8 +13,7 @@ import D from './Defaults.js';
 const { defaultOptions, defaultTime } = D;
 import G from './Globals.js';
 const { pageLang } = G;
-import U from './Utilities.js';
-const { extend, getNestedProperty, isArray, isNumber, isObject, isString, pick, ucfirst } = U;
+import { extend, getNestedProperty, isArray, isNumber, isObject, isString, pick, ucfirst } from '../Shared/Utilities.js';
 /** @internal */
 const helpers = {
     // Built-in helpers

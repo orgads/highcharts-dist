@@ -25,8 +25,7 @@ import H from '../../Core/Globals.js';
 const { doc } = H;
 import HU from '../Utils/HTMLUtilities.js';
 const { addClass, getElement, getHeadingTagNameForElement, stripHTMLTagsFromString, visuallyHideElement } = HU;
-import U from '../../Core/Utilities.js';
-const { attr, pick, replaceNested } = U;
+import { attr, pick, replaceNested } from '../../Shared/Utilities.js';
 /* *
  *
  *  Functions

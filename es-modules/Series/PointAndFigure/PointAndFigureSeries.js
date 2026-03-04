@@ -18,10 +18,9 @@ import PointAndFigureSeriesDefaults from './PointAndFigureSeriesDefaults.js';
 import SeriesRegistry from '../../Core/Series/SeriesRegistry.js';
 import PointAndFigureSymbols from './PointAndFigureSymbols.js';
 import H from '../../Core/Globals.js';
-import U from '../../Core/Utilities.js';
+import { extend, isNumber, merge, pushUnique, relativeLength } from '../../Shared/Utilities.js';
 const { composed } = H;
 const { scatter: ScatterSeries, column: { prototype: columnProto } } = SeriesRegistry.seriesTypes;
-const { extend, merge, pushUnique, isNumber, relativeLength } = U;
 /* *
  *
  *  Declarations

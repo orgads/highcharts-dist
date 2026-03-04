@@ -13,8 +13,7 @@
 import F from '../../Core/Templating.js';
 import H from '../../Core/Globals.js';
 const { noop } = H;
-import U from '../../Core/Utilities.js';
-const { arrayMax, arrayMin, isNumber, merge, pick, stableSort } = U;
+import { arrayMax, arrayMin, isNumber, merge, pick, stableSort } from '../../Shared/Utilities.js';
 /* *
  *
  *  Class

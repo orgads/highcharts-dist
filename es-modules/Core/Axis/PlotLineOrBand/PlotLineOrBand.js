@@ -10,8 +10,7 @@
  * */
 'use strict';
 import PlotLineOrBandAxis from './PlotLineOrBandAxis.js';
-import U from '../../Utilities.js';
-const { addEvent, arrayMax, arrayMin, defined, destroyObjectProperties, erase, fireEvent, merge, objectEach, pick } = U;
+import { addEvent, arrayMax, arrayMin, defined, destroyObjectProperties, erase, fireEvent, merge, objectEach, pick } from '../../../Shared/Utilities.js';
 /* *
  *
  *  Class
@@ -268,8 +267,8 @@ class PlotLineOrBand {
                     !inside) ? (label.rotation === 90 ?
                     axis.height - (label.alignAttr.y -
                         axis.top) : (optionsLabel.clip ?
-                    axis.width :
-                    axis.chart.chartWidth) - (label.alignAttr.x - axis.left)) :
+                    (axis.width + axis.left) :
+                    axis.chart.chartWidth) - label.alignAttr.x) :
                     bBoxWidth)) + 'px'
             });
         }

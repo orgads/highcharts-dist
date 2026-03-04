@@ -4,8 +4,7 @@
  * */
 'use strict';
 import EventEmitter from './EventEmitter.js';
-import U from '../../Core/Utilities.js';
-const { merge, pick } = U;
+import { merge, pick } from '../../Shared/Utilities.js';
 /* *
  *
  *  Class

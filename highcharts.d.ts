@@ -29,6 +29,7 @@ import "./options/cmo";
 import "./options/column";
 import "./options/columnpyramid";
 import "./options/columnrange";
+import "./options/contour";
 import "./options/cylinder";
 import "./options/dema";
 import "./options/dependencywheel";
@@ -906,7 +907,7 @@ export type SeriesAfterAnimateCallbackFunction = (this: Series, event: SeriesAft
  */
 export type SeriesCheckboxClickCallbackFunction = (this: Series, event: SeriesCheckboxClickEventObject) => void;
 /**
- * Function callback when a series is clicked. Return false to cancel toogle
+ * Function callback when a series is clicked. Return false to cancel toggle
  * actions.
  *
  * @param this
@@ -928,9 +929,9 @@ export type SeriesClickCallbackFunction = (this: Series, event: SeriesClickEvent
  */
 export type SeriesHideCallbackFunction = (this: Series, event: Event) => void;
 /**
- * Gets fired when the legend item belonging to the series is clicked. The
- * default action is to toggle the visibility of the series. This can be
- * prevented by returning `false` or calling `event.preventDefault()`.
+ * Gets fired when the legend item belonging to a series is clicked. The default
+ * action is to toggle the visibility of the series. This can be prevented by
+ * returning `false` or calling `event.preventDefault()`.
  *
  * **Note:** This option is deprecated in favor of
  * Highcharts.LegendItemClickCallbackFunction.
@@ -1102,12 +1103,12 @@ export type UnknownSeriesOptions = Omit<UnknownSeriesOptionsType,"type">&{data?:
 export type UnknownSeriesOptionsType = (SeriesAbandsOptions|SeriesAdOptions|SeriesAoOptions|SeriesApoOptions|SeriesArcdiagramOptions|SeriesAreaOptions|SeriesArearangeOptions|SeriesAreasplineOptions|
 SeriesAreasplinerangeOptions|SeriesAroonOptions|SeriesAroonoscillatorOptions|SeriesAtrOptions|SeriesBarOptions|SeriesBbOptions|SeriesBellcurveOptions|SeriesBoxplotOptions|SeriesBubbleOptions|
 SeriesBulletOptions|SeriesCandlestickOptions|SeriesCciOptions|SeriesChaikinOptions|SeriesCmfOptions|SeriesCmoOptions|SeriesColumnOptions|SeriesColumnpyramidOptions|SeriesColumnrangeOptions|
-SeriesCylinderOptions|SeriesDemaOptions|SeriesDependencywheelOptions|SeriesDisparityindexOptions|SeriesDmiOptions|SeriesDpoOptions|SeriesDumbbellOptions|SeriesEmaOptions|SeriesErrorbarOptions|
-SeriesFlagsOptions|SeriesFlowmapOptions|SeriesFunnel3dOptions|SeriesFunnelOptions|SeriesGanttOptions|SeriesGaugeOptions|SeriesGeoheatmapOptions|SeriesHeatmapOptions|SeriesHeikinashiOptions|
-SeriesHistogramOptions|SeriesHlcOptions|SeriesHollowcandlestickOptions|SeriesIkhOptions|SeriesItemOptions|SeriesKeltnerchannelsOptions|SeriesKlingerOptions|SeriesLinearregressionangleOptions|
-SeriesLinearregressioninterceptOptions|SeriesLinearregressionOptions|SeriesLinearregressionslopeOptions|SeriesLineOptions|SeriesLollipopOptions|SeriesMacdOptions|SeriesMapbubbleOptions|
-SeriesMaplineOptions|SeriesMapOptions|SeriesMappointOptions|SeriesMfiOptions|SeriesMomentumOptions|SeriesNatrOptions|SeriesNetworkgraphOptions|SeriesObvOptions|SeriesOhlcOptions|
-SeriesOrganizationOptions|SeriesPackedbubbleOptions|SeriesParetoOptions|SeriesPcOptions|SeriesPictorialOptions|SeriesPieOptions|SeriesPivotpointsOptions|SeriesPointandfigureOptions|
+SeriesContourOptions|SeriesCylinderOptions|SeriesDemaOptions|SeriesDependencywheelOptions|SeriesDisparityindexOptions|SeriesDmiOptions|SeriesDpoOptions|SeriesDumbbellOptions|SeriesEmaOptions|
+SeriesErrorbarOptions|SeriesFlagsOptions|SeriesFlowmapOptions|SeriesFunnel3dOptions|SeriesFunnelOptions|SeriesGanttOptions|SeriesGaugeOptions|SeriesGeoheatmapOptions|SeriesHeatmapOptions|
+SeriesHeikinashiOptions|SeriesHistogramOptions|SeriesHlcOptions|SeriesHollowcandlestickOptions|SeriesIkhOptions|SeriesItemOptions|SeriesKeltnerchannelsOptions|SeriesKlingerOptions|
+SeriesLinearregressionangleOptions|SeriesLinearregressioninterceptOptions|SeriesLinearregressionOptions|SeriesLinearregressionslopeOptions|SeriesLineOptions|SeriesLollipopOptions|SeriesMacdOptions|
+SeriesMapbubbleOptions|SeriesMaplineOptions|SeriesMapOptions|SeriesMappointOptions|SeriesMfiOptions|SeriesMomentumOptions|SeriesNatrOptions|SeriesNetworkgraphOptions|SeriesObvOptions|
+SeriesOhlcOptions|SeriesOrganizationOptions|SeriesPackedbubbleOptions|SeriesParetoOptions|SeriesPcOptions|SeriesPictorialOptions|SeriesPieOptions|SeriesPivotpointsOptions|SeriesPointandfigureOptions|
 SeriesPolygonOptions|SeriesPpoOptions|SeriesPriceenvelopesOptions|SeriesPsarOptions|SeriesPyramid3dOptions|SeriesPyramidOptions|SeriesRenkoOptions|SeriesRocOptions|SeriesRsiOptions|
 SeriesSankeyOptions|SeriesScatter3dOptions|SeriesScatterOptions|SeriesSlowstochasticOptions|SeriesSmaOptions|SeriesSolidgaugeOptions|SeriesSplineOptions|SeriesStochasticOptions|
 SeriesStreamgraphOptions|SeriesSunburstOptions|SeriesSupertrendOptions|SeriesTemaOptions|SeriesTiledwebmapOptions|SeriesTilemapOptions|SeriesTimelineOptions|SeriesTreegraphOptions|
@@ -2277,16 +2278,21 @@ export interface AnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -2310,21 +2316,30 @@ export interface AnnotationsShapeOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -2354,7 +2369,9 @@ export interface AnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
@@ -2385,12 +2402,15 @@ export interface AnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -2414,21 +2434,30 @@ export interface AnnotationsShapesOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -2447,16 +2476,21 @@ export interface AnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -2480,21 +2514,30 @@ export interface AnnotationsTypeBackgroundOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -2512,16 +2555,21 @@ export interface AnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -2545,21 +2593,30 @@ export interface AnnotationsTypeLineOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -4163,7 +4220,8 @@ export interface AnnotationsTypesPitchforkTypeInnerBackgroundOptions {
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -4185,13 +4243,20 @@ export interface AnnotationsTypesPitchforkTypeInnerBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -4232,7 +4297,8 @@ export interface AnnotationsTypesPitchforkTypeOuterBackgroundOptions {
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -4254,13 +4320,20 @@ export interface AnnotationsTypesPitchforkTypeOuterBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -4688,7 +4761,8 @@ export interface AnnotationsTypesVerticalLineTypeConnectorOptions {
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -4710,13 +4784,20 @@ export interface AnnotationsTypesVerticalLineTypeConnectorOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -4999,6 +5080,12 @@ export interface AxisCrosshairOptions {
      */
     label?: AxisCrosshairLabelOptions;
     /**
+     * (Highcharts, Highstock, Highmaps, Gantt) The number of milliseconds to
+     * wait until the crosshair is shown when the mouse is over a point. Works
+     * on initial hover.
+     */
+    showDelay?: number;
+    /**
      * (Highcharts, Highstock, Highmaps, Gantt) Whether the crosshair should
      * snap to the point or follow the pointer independent of points.
      */
@@ -5237,6 +5324,12 @@ export interface BoostOptions {
      * crosses its threshold and all the series in the chart can be boosted.
      */
     allowForce?: boolean;
+    /**
+     * (Highcharts, Highstock) The number of points processed per frame when
+     * building the k-d tree for boosted series. Lower values improve
+     * responsiveness but increase the time it takes to build the tree.
+     */
+    chunkSize?: number;
     /**
      * (Highcharts, Highstock) Debugging options for boost. Useful for
      * benchmarking, and general timing.
@@ -6085,6 +6178,10 @@ export interface ChartOptions {
      * On touch devices, when the tooltip.followTouchMove option is `true`
      * (default), panning requires two fingers. To allow panning with one
      * finger, set `followTouchMove` to `false`.
+     *
+     * **Note:** If both zooming and panning are enabled without keys, zooming
+     * will take precedence by default. To prioritize panning, either set
+     * chart.zooming.key or panKey.
      */
     panning?: ChartPanningOptions;
     /**
@@ -6290,6 +6387,10 @@ export interface ChartOptions {
  * On touch devices, when the tooltip.followTouchMove option is `true`
  * (default), panning requires two fingers. To allow panning with one finger,
  * set `followTouchMove` to `false`.
+ *
+ * **Note:** If both zooming and panning are enabled without keys, zooming will
+ * take precedence by default. To prioritize panning, either set
+ * chart.zooming.key or panKey.
  */
 export interface ChartPanningOptions {
     /**
@@ -6929,6 +7030,14 @@ export interface ChartParallelAxesOptions {
      */
     startOnTick?: boolean;
     /**
+     * (Highcharts, Highstock, Gantt) For vertical axes only. Setting the static
+     * scale ensures that each tick unit is translated into a fixed pixel
+     * height. For example, setting the static scale to 24 results in each Y
+     * axis category taking up 24 pixels, and the height of the chart adjusts.
+     * Adding or removing items will make the chart resize.
+     */
+    staticScale?: number;
+    /**
      * (Highcharts, Highstock, Gantt) The amount of ticks to draw on the axis.
      * This opens up for aligning the ticks of multiple charts or panes within a
      * chart. This option overrides the `tickPixelInterval` option.
@@ -7011,9 +7120,10 @@ export interface ChartParallelAxesOptions {
      */
     tickWidth?: number;
     /**
-     * (Highcharts) Titles for yAxes are taken from xAxis.categories. All
-     * options for `xAxis.labels` applies to parallel coordinates titles. For
-     * example, to style categories, use xAxis.labels.style.
+     * (Highcharts) Visually the parallel coordinates titles are done through
+     * xAxis.categories. All options for `xAxis.labels` applies to parallel
+     * coordinates titles. For example, to style categories, use
+     * xAxis.labels.style.
      */
     title?: ChartParallelAxesTitleOptions;
     /**
@@ -7094,12 +7204,90 @@ export interface ChartParallelAxesOptions {
     zoomEnabled?: boolean;
 }
 /**
- * (Highcharts) Titles for yAxes are taken from xAxis.categories. All options
- * for `xAxis.labels` applies to parallel coordinates titles. For example, to
- * style categories, use xAxis.labels.style.
+ * (Highcharts) Visually the parallel coordinates titles are done through
+ * xAxis.categories. All options for `xAxis.labels` applies to parallel
+ * coordinates titles. For example, to style categories, use xAxis.labels.style.
  */
 export interface ChartParallelAxesTitleOptions {
+    /**
+     * (Highcharts) Alignment of the title relative to the axis values. Possible
+     * values are "low", "middle" or "high".
+     */
+    align?: AxisTitleAlignValue;
+    /**
+     * (Highcharts) The pixel distance between the axis labels and the title.
+     * Positive values are outside the axis line, negative are inside.
+     */
+    margin?: number;
+    /**
+     * (Highcharts) The distance of the axis title from the axis line. By
+     * default, this distance is computed from the offset width of the labels,
+     * the labels' distance from the axis and the title's margin. However when
+     * the offset option is set, it overrides all this.
+     */
+    offset?: number;
+    /**
+     * (Highcharts) Defines how the title is repositioned according to the 3D
+     * chart orientation.
+     *
+     * - `'offset'`: Maintain a fixed horizontal/vertical distance from the tick
+     * marks, despite the chart orientation. This is the backwards compatible
+     * behavior, and causes skewing of X and Z axes.
+     *
+     * - `'chart'`: Preserve 3D position relative to the chart. This looks nice,
+     * but hard to read if the text isn't forward-facing.
+     *
+     * - `'flap'`: Rotated text along the axis to compensate for the chart
+     * orientation. This tries to maintain text as legible as possible on all
+     * orientations.
+     *
+     * - `'ortho'`: Rotated text along the axis direction so that the labels are
+     * orthogonal to the axis. This is very similar to `'flap'`, but prevents
+     * skewing the labels (X and Y scaling are still present).
+     *
+     * - `undefined`: Will use the config from `labels.position3d`
+     */
+    position3d?: ("chart"|"flap"|"offset"|"ortho"|null);
+    /**
+     * (Highcharts, Highstock, Gantt) Whether to reserve space for the title
+     * when laying out the axis.
+     */
     reserveSpace?: boolean;
+    /**
+     * (Highcharts) The rotation of the text in degrees. 0 is horizontal, 270 is
+     * vertical reading from bottom to top. Defaults to 0 for horizontal axes,
+     * 270 for left-side axes and 90 for right-side axes.
+     */
+    rotation?: number;
+    /**
+     * (Highcharts) If enabled, the axis title will skewed to follow the
+     * perspective.
+     *
+     * This will fix overlapping labels and titles, but texts become less
+     * legible due to the distortion.
+     *
+     * The final appearance depends heavily on `title.position3d`.
+     *
+     * A `null` value will use the config from `labels.skew3d`.
+     */
+    skew3d?: (boolean|null);
+    /**
+     * (Highcharts) CSS styles for the title. If the title text is longer than
+     * the axis length, it will wrap to multiple lines by default. This can be
+     * customized by setting the `lineClamp` property, by setting a specific
+     * `width` or by setting `whiteSpace: 'nowrap'`.
+     *
+     * In styled mode, the stroke width is given in the `.highcharts-axis-title`
+     * class.
+     */
+    style?: (ChartParallelAxesTitleStyleOptions|CSSObject);
+    /**
+     * (Highcharts, Highstock, Gantt) The actual text of the axis title.
+     * Horizontal texts can contain HTML, but rotated texts are painted using
+     * vector techniques and must be clean text. The Y axis title is disabled by
+     * setting the `text` option to `undefined`. The default value is overriden
+     * by the `lang.yAxisTitle` language option.
+     */
     text?: string;
     /**
      * (Highcharts) Alignment of the text, can be `"left"`, `"right"` or
@@ -7130,6 +7318,33 @@ export interface ChartParallelAxesTitleOptions {
      * `right`
      */
     textAlign?: AlignValue;
+    /**
+     * (Highcharts, Highstock, Gantt) Whether to use HTML to render the axis
+     * title.
+     */
+    useHTML?: boolean;
+    /**
+     * (Highcharts, Highstock, Gantt) Horizontal pixel offset of the title
+     * position.
+     */
+    x?: number;
+    /**
+     * (Highcharts, Highstock, Gantt) Vertical pixel offset of the title
+     * position.
+     */
+    y?: number;
+}
+/**
+ * (Highcharts) CSS styles for the title. If the title text is longer than the
+ * axis length, it will wrap to multiple lines by default. This can be
+ * customized by setting the `lineClamp` property, by setting a specific `width`
+ * or by setting `whiteSpace: 'nowrap'`.
+ *
+ * In styled mode, the stroke width is given in the `.highcharts-axis-title`
+ * class.
+ */
+export interface ChartParallelAxesTitleStyleOptions {
+    fontSize?: (number|string);
 }
 /**
  * Chart position and scale.
@@ -7311,6 +7526,10 @@ export interface ChartZoomingOptions {
      * (Highcharts, Highstock, Highmaps, Gantt) Set a key to hold when dragging
      * to zoom the chart. This is useful to avoid zooming while moving points.
      * Should be set different than chart.panKey.
+     *
+     * **Note:** If both zooming and panning are enabled without keys, zooming
+     * will take precedence by default. To prioritize panning, either set
+     * zooming key or chart.panKey.
      */
     key?: OptionsKeyValue;
     /**
@@ -7708,7 +7927,7 @@ export interface ColorAxisLabelsStyleOptions {
  * series.
  *
  * Color axis does not work with: `sankey`, `sunburst`, `dependencywheel`,
- * `networkgraph`, `wordcloud`, `venn`, `gauge` and `solidgauge` series types.
+ * `networkgraph`, `venn`, `gauge` and `solidgauge` series types.
  *
  * Since v7.2.0 `colorAxis` can also be an array of options objects.
  *
@@ -8062,6 +8281,14 @@ export interface ColorAxisOptions {
      * start.
      */
     startOnTick?: boolean;
+    /**
+     * (Highcharts, Highstock, Gantt) For vertical axes only. Setting the static
+     * scale ensures that each tick unit is translated into a fixed pixel
+     * height. For example, setting the static scale to 24 results in each Y
+     * axis category taking up 24 pixels, and the height of the chart adjusts.
+     * Adding or removing items will make the chart resize.
+     */
+    staticScale?: number;
     /**
      * (Highcharts, Highstock, Highmaps) Color stops for the gradient of a
      * scalar color axis. Use this in cases where a linear gradient between a
@@ -8850,18 +9077,18 @@ export interface DataLabelsOptions {
     animation?: (boolean|SeriesArcdiagramDataDataLabelsAnimationOptions|SeriesAreaDataDataLabelsAnimationOptions|SeriesArearangeDataDataLabelsAnimationOptions|
 SeriesAreasplineDataDataLabelsAnimationOptions|SeriesAreasplinerangeDataDataLabelsAnimationOptions|SeriesBarDataDataLabelsAnimationOptions|SeriesBoxplotDataDataLabelsAnimationOptions|
 SeriesBubbleDataDataLabelsAnimationOptions|SeriesBulletDataDataLabelsAnimationOptions|SeriesCandlestickDataDataLabelsAnimationOptions|SeriesColumnDataDataLabelsAnimationOptions|
-SeriesColumnpyramidDataDataLabelsAnimationOptions|SeriesColumnrangeDataDataLabelsAnimationOptions|SeriesCylinderDataDataLabelsAnimationOptions|SeriesDumbbellDataDataLabelsAnimationOptions|
-SeriesFunnel3dDataDataLabelsAnimationOptions|SeriesFunnelDataDataLabelsAnimationOptions|SeriesGaugeDataDataLabelsAnimationOptions|SeriesHeatmapDataDataLabelsAnimationOptions|
-SeriesHeikinashiDataDataLabelsAnimationOptions|SeriesHlcDataDataLabelsAnimationOptions|SeriesHollowcandlestickDataDataLabelsAnimationOptions|SeriesItemDataDataLabelsAnimationOptions|
-SeriesLineDataDataLabelsAnimationOptions|SeriesLollipopDataDataLabelsAnimationOptions|SeriesNetworkgraphDataDataLabelsAnimationOptions|SeriesOhlcDataDataLabelsAnimationOptions|
-SeriesOrganizationDataDataLabelsAnimationOptions|SeriesPackedbubbleDataDataLabelsAnimationOptions|SeriesParetoDataDataLabelsAnimationOptions|SeriesPictorialDataDataLabelsAnimationOptions|
-SeriesPieDataDataLabelsAnimationOptions|SeriesPointandfigureDataDataLabelsAnimationOptions|SeriesPolygonDataDataLabelsAnimationOptions|SeriesPyramid3dDataDataLabelsAnimationOptions|
-SeriesPyramidDataDataLabelsAnimationOptions|SeriesRenkoDataDataLabelsAnimationOptions|SeriesSankeyDataDataLabelsAnimationOptions|SeriesScatter3dDataDataLabelsAnimationOptions|
-SeriesScatterDataDataLabelsAnimationOptions|SeriesSolidgaugeDataDataLabelsAnimationOptions|SeriesSplineDataDataLabelsAnimationOptions|SeriesStreamgraphDataDataLabelsAnimationOptions|
-SeriesSunburstDataDataLabelsAnimationOptions|SeriesTilemapDataDataLabelsAnimationOptions|SeriesTimelineDataDataLabelsAnimationOptions|SeriesTreegraphDataDataLabelsAnimationOptions|
-SeriesTreemapDataDataLabelsAnimationOptions|SeriesVariablepieDataDataLabelsAnimationOptions|SeriesVariwideDataDataLabelsAnimationOptions|SeriesVectorDataDataLabelsAnimationOptions|
-SeriesVennDataDataLabelsAnimationOptions|SeriesWaterfallDataDataLabelsAnimationOptions|SeriesWindbarbDataDataLabelsAnimationOptions|SeriesWordcloudDataDataLabelsAnimationOptions|
-SeriesXrangeDataDataLabelsAnimationOptions|Partial<AnimationOptionsObject>);
+SeriesColumnpyramidDataDataLabelsAnimationOptions|SeriesColumnrangeDataDataLabelsAnimationOptions|SeriesContourDataDataLabelsAnimationOptions|SeriesCylinderDataDataLabelsAnimationOptions|
+SeriesDumbbellDataDataLabelsAnimationOptions|SeriesFunnel3dDataDataLabelsAnimationOptions|SeriesFunnelDataDataLabelsAnimationOptions|SeriesGaugeDataDataLabelsAnimationOptions|
+SeriesHeatmapDataDataLabelsAnimationOptions|SeriesHeikinashiDataDataLabelsAnimationOptions|SeriesHlcDataDataLabelsAnimationOptions|SeriesHollowcandlestickDataDataLabelsAnimationOptions|
+SeriesItemDataDataLabelsAnimationOptions|SeriesLineDataDataLabelsAnimationOptions|SeriesLollipopDataDataLabelsAnimationOptions|SeriesNetworkgraphDataDataLabelsAnimationOptions|
+SeriesOhlcDataDataLabelsAnimationOptions|SeriesOrganizationDataDataLabelsAnimationOptions|SeriesPackedbubbleDataDataLabelsAnimationOptions|SeriesParetoDataDataLabelsAnimationOptions|
+SeriesPictorialDataDataLabelsAnimationOptions|SeriesPieDataDataLabelsAnimationOptions|SeriesPointandfigureDataDataLabelsAnimationOptions|SeriesPolygonDataDataLabelsAnimationOptions|
+SeriesPyramid3dDataDataLabelsAnimationOptions|SeriesPyramidDataDataLabelsAnimationOptions|SeriesRenkoDataDataLabelsAnimationOptions|SeriesSankeyDataDataLabelsAnimationOptions|
+SeriesScatter3dDataDataLabelsAnimationOptions|SeriesScatterDataDataLabelsAnimationOptions|SeriesSolidgaugeDataDataLabelsAnimationOptions|SeriesSplineDataDataLabelsAnimationOptions|
+SeriesStreamgraphDataDataLabelsAnimationOptions|SeriesSunburstDataDataLabelsAnimationOptions|SeriesTilemapDataDataLabelsAnimationOptions|SeriesTimelineDataDataLabelsAnimationOptions|
+SeriesTreegraphDataDataLabelsAnimationOptions|SeriesTreemapDataDataLabelsAnimationOptions|SeriesVariablepieDataDataLabelsAnimationOptions|SeriesVariwideDataDataLabelsAnimationOptions|
+SeriesVectorDataDataLabelsAnimationOptions|SeriesVennDataDataLabelsAnimationOptions|SeriesWaterfallDataDataLabelsAnimationOptions|SeriesWindbarbDataDataLabelsAnimationOptions|
+SeriesWordcloudDataDataLabelsAnimationOptions|SeriesXrangeDataDataLabelsAnimationOptions|Partial<AnimationOptionsObject>);
     /**
      * (Highcharts, Highstock, Gantt) The background color or gradient for the
      * data label. Setting it to `auto` will use the point's color.
@@ -9869,9 +10096,8 @@ export interface DrilldownOptions {
      * will not occur.
      *
      * The animation can either be set as a boolean or a configuration object.
-     * If `true`, it will use the 'swing' jQuery easing and a duration of 500
-     * ms. If used as a configuration object, the following properties are
-     * supported:
+     * If `true`, it will use a duration of 500 ms. If used as a configuration
+     * object, the following properties are supported:
      *
      * - `duration`: The duration of the animation in milliseconds.
      *
@@ -13861,16 +14087,21 @@ export interface NavigationAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -13894,21 +14125,30 @@ export interface NavigationAnnotationsShapeOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -13938,7 +14178,9 @@ export interface NavigationAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
@@ -13969,12 +14211,15 @@ export interface NavigationAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -13998,21 +14243,30 @@ export interface NavigationAnnotationsShapesOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -14031,16 +14285,21 @@ export interface NavigationAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -14064,21 +14323,30 @@ export interface NavigationAnnotationsTypeBackgroundOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -14096,16 +14364,21 @@ export interface NavigationAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The height of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The height of the `rect` shape.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `circle`
+     * shape. Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the shape in y
-     * direction. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The radius of the `ellipse`
+     * shape in y direction. Can be defined in pixels or yAxis units, if
+     * shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -14129,21 +14402,30 @@ export interface NavigationAnnotationsTypeLineOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) The type of the shape. Available
-     * options are circle, rect and ellipse.
+     * options are `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The width of the shape.
+     * (Highcharts, Highstock, Highmaps, Gantt) The width of the `rect` shape.
+     * Can be defined in pixels or xAxis units, if shapes.xAxis index is
+     * defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The xAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index to which the
-     * points should be attached. Used for the ellipse.
+     * (Highcharts, Highstock, Highmaps, Gantt) The yAxis index which should be
+     * used for annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -15747,7 +16029,8 @@ export interface NavigationAnnotationsTypesPitchforkTypeInnerBackgroundOptions {
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -15769,13 +16052,20 @@ export interface NavigationAnnotationsTypesPitchforkTypeInnerBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -15816,7 +16106,8 @@ export interface NavigationAnnotationsTypesPitchforkTypeOuterBackgroundOptions {
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -15838,13 +16129,20 @@ export interface NavigationAnnotationsTypesPitchforkTypeOuterBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -16272,7 +16570,8 @@ export interface NavigationAnnotationsTypesVerticalLineTypeConnectorOptions {
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -16294,13 +16593,20 @@ export interface NavigationAnnotationsTypesVerticalLineTypeConnectorOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -16865,15 +17171,18 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -16895,22 +17204,30 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -16938,7 +17255,8 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -16967,11 +17285,13 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -16993,22 +17313,30 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -17025,15 +17353,18 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypeBackgroundOpt
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -17055,22 +17386,30 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypeBackgroundOpt
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -17087,15 +17426,18 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -17117,22 +17459,30 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -18733,7 +19083,8 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypesPitchforkTyp
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -18755,13 +19106,20 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypesPitchforkTyp
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -18802,7 +19160,8 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypesPitchforkTyp
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -18824,13 +19183,20 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypesPitchforkTyp
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -19258,7 +19624,8 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypesVerticalLine
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -19280,13 +19647,20 @@ export interface NavigationBindingsArrowInfinityLineAnnotationsTypesVerticalLine
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -19862,15 +20236,18 @@ export interface NavigationBindingsArrowRayAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -19892,22 +20269,30 @@ export interface NavigationBindingsArrowRayAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -19935,7 +20320,8 @@ export interface NavigationBindingsArrowRayAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -19964,11 +20350,13 @@ export interface NavigationBindingsArrowRayAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -19990,22 +20378,30 @@ export interface NavigationBindingsArrowRayAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -20022,15 +20418,18 @@ export interface NavigationBindingsArrowRayAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -20052,22 +20451,30 @@ export interface NavigationBindingsArrowRayAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -20084,15 +20491,18 @@ export interface NavigationBindingsArrowRayAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -20114,22 +20524,30 @@ export interface NavigationBindingsArrowRayAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -21730,7 +22148,8 @@ export interface NavigationBindingsArrowRayAnnotationsTypesPitchforkTypeInnerBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -21752,13 +22171,20 @@ export interface NavigationBindingsArrowRayAnnotationsTypesPitchforkTypeInnerBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -21799,7 +22225,8 @@ export interface NavigationBindingsArrowRayAnnotationsTypesPitchforkTypeOuterBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -21821,13 +22248,20 @@ export interface NavigationBindingsArrowRayAnnotationsTypesPitchforkTypeOuterBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -22255,7 +22689,8 @@ export interface NavigationBindingsArrowRayAnnotationsTypesVerticalLineTypeConne
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -22277,13 +22712,20 @@ export interface NavigationBindingsArrowRayAnnotationsTypesVerticalLineTypeConne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -22859,15 +23301,18 @@ export interface NavigationBindingsArrowSegmentAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -22889,22 +23334,30 @@ export interface NavigationBindingsArrowSegmentAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -22932,7 +23385,8 @@ export interface NavigationBindingsArrowSegmentAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -22961,11 +23415,13 @@ export interface NavigationBindingsArrowSegmentAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -22987,22 +23443,30 @@ export interface NavigationBindingsArrowSegmentAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -23019,15 +23483,18 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypeBackgroundOptions 
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -23049,22 +23516,30 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypeBackgroundOptions 
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -23081,15 +23556,18 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -23111,22 +23589,30 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -24727,7 +25213,8 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypesPitchforkTypeInne
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -24749,13 +25236,20 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypesPitchforkTypeInne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -24796,7 +25290,8 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypesPitchforkTypeOute
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -24818,13 +25313,20 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypesPitchforkTypeOute
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -25252,7 +25754,8 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypesVerticalLineTypeC
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -25274,13 +25777,20 @@ export interface NavigationBindingsArrowSegmentAnnotationsTypesVerticalLineTypeC
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -25875,16 +26385,19 @@ export interface NavigationBindingsCircleAnnotationAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -25907,21 +26420,29 @@ export interface NavigationBindingsCircleAnnotationAnnotationsShapeOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -25950,7 +26471,8 @@ export interface NavigationBindingsCircleAnnotationAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -25979,12 +26501,14 @@ export interface NavigationBindingsCircleAnnotationAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -26007,21 +26531,29 @@ export interface NavigationBindingsCircleAnnotationAnnotationsShapesOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -26039,16 +26571,19 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypeBackgroundOpti
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -26071,21 +26606,29 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypeBackgroundOpti
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -26103,16 +26646,19 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -26135,21 +26681,29 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypeLineOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -27750,7 +28304,8 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypesPitchforkType
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -27772,13 +28327,20 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypesPitchforkType
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -27819,7 +28381,8 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypesPitchforkType
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -27841,13 +28404,20 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypesPitchforkType
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -28275,7 +28845,8 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypesVerticalLineT
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -28297,13 +28868,20 @@ export interface NavigationBindingsCircleAnnotationAnnotationsTypesVerticalLineT
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -28879,15 +29457,18 @@ export interface NavigationBindingsCrooked3AnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -28909,22 +29490,30 @@ export interface NavigationBindingsCrooked3AnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -28952,7 +29541,8 @@ export interface NavigationBindingsCrooked3AnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -28981,11 +29571,13 @@ export interface NavigationBindingsCrooked3AnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -29007,22 +29599,30 @@ export interface NavigationBindingsCrooked3AnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -29039,15 +29639,18 @@ export interface NavigationBindingsCrooked3AnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -29069,22 +29672,30 @@ export interface NavigationBindingsCrooked3AnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -29101,15 +29712,18 @@ export interface NavigationBindingsCrooked3AnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -29131,22 +29745,30 @@ export interface NavigationBindingsCrooked3AnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -30747,7 +31369,8 @@ export interface NavigationBindingsCrooked3AnnotationsTypesPitchforkTypeInnerBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -30769,13 +31392,20 @@ export interface NavigationBindingsCrooked3AnnotationsTypesPitchforkTypeInnerBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -30816,7 +31446,8 @@ export interface NavigationBindingsCrooked3AnnotationsTypesPitchforkTypeOuterBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -30838,13 +31469,20 @@ export interface NavigationBindingsCrooked3AnnotationsTypesPitchforkTypeOuterBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -31272,7 +31910,8 @@ export interface NavigationBindingsCrooked3AnnotationsTypesVerticalLineTypeConne
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -31294,13 +31933,20 @@ export interface NavigationBindingsCrooked3AnnotationsTypesVerticalLineTypeConne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -31877,15 +32523,18 @@ export interface NavigationBindingsCrooked5AnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -31907,22 +32556,30 @@ export interface NavigationBindingsCrooked5AnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -31950,7 +32607,8 @@ export interface NavigationBindingsCrooked5AnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -31979,11 +32637,13 @@ export interface NavigationBindingsCrooked5AnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -32005,22 +32665,30 @@ export interface NavigationBindingsCrooked5AnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -32037,15 +32705,18 @@ export interface NavigationBindingsCrooked5AnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -32067,22 +32738,30 @@ export interface NavigationBindingsCrooked5AnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -32099,15 +32778,18 @@ export interface NavigationBindingsCrooked5AnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -32129,22 +32811,30 @@ export interface NavigationBindingsCrooked5AnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -33745,7 +34435,8 @@ export interface NavigationBindingsCrooked5AnnotationsTypesPitchforkTypeInnerBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -33767,13 +34458,20 @@ export interface NavigationBindingsCrooked5AnnotationsTypesPitchforkTypeInnerBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -33814,7 +34512,8 @@ export interface NavigationBindingsCrooked5AnnotationsTypesPitchforkTypeOuterBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -33836,13 +34535,20 @@ export interface NavigationBindingsCrooked5AnnotationsTypesPitchforkTypeOuterBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -34270,7 +34976,8 @@ export interface NavigationBindingsCrooked5AnnotationsTypesVerticalLineTypeConne
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -34292,13 +34999,20 @@ export interface NavigationBindingsCrooked5AnnotationsTypesVerticalLineTypeConne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -34874,15 +35588,18 @@ export interface NavigationBindingsElliott3AnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -34904,22 +35621,30 @@ export interface NavigationBindingsElliott3AnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -34947,7 +35672,8 @@ export interface NavigationBindingsElliott3AnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -34976,11 +35702,13 @@ export interface NavigationBindingsElliott3AnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -35002,22 +35730,30 @@ export interface NavigationBindingsElliott3AnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -35034,15 +35770,18 @@ export interface NavigationBindingsElliott3AnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -35064,22 +35803,30 @@ export interface NavigationBindingsElliott3AnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -35096,15 +35843,18 @@ export interface NavigationBindingsElliott3AnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -35126,22 +35876,30 @@ export interface NavigationBindingsElliott3AnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -36742,7 +37500,8 @@ export interface NavigationBindingsElliott3AnnotationsTypesPitchforkTypeInnerBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -36764,13 +37523,20 @@ export interface NavigationBindingsElliott3AnnotationsTypesPitchforkTypeInnerBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -36811,7 +37577,8 @@ export interface NavigationBindingsElliott3AnnotationsTypesPitchforkTypeOuterBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -36833,13 +37600,20 @@ export interface NavigationBindingsElliott3AnnotationsTypesPitchforkTypeOuterBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -37267,7 +38041,8 @@ export interface NavigationBindingsElliott3AnnotationsTypesVerticalLineTypeConne
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -37289,13 +38064,20 @@ export interface NavigationBindingsElliott3AnnotationsTypesVerticalLineTypeConne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -37871,15 +38653,18 @@ export interface NavigationBindingsElliott5AnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -37901,22 +38686,30 @@ export interface NavigationBindingsElliott5AnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -37944,7 +38737,8 @@ export interface NavigationBindingsElliott5AnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -37973,11 +38767,13 @@ export interface NavigationBindingsElliott5AnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -37999,22 +38795,30 @@ export interface NavigationBindingsElliott5AnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -38031,15 +38835,18 @@ export interface NavigationBindingsElliott5AnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -38061,22 +38868,30 @@ export interface NavigationBindingsElliott5AnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -38093,15 +38908,18 @@ export interface NavigationBindingsElliott5AnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -38123,22 +38941,30 @@ export interface NavigationBindingsElliott5AnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -39739,7 +40565,8 @@ export interface NavigationBindingsElliott5AnnotationsTypesPitchforkTypeInnerBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -39761,13 +40588,20 @@ export interface NavigationBindingsElliott5AnnotationsTypesPitchforkTypeInnerBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -39808,7 +40642,8 @@ export interface NavigationBindingsElliott5AnnotationsTypesPitchforkTypeOuterBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -39830,13 +40665,20 @@ export interface NavigationBindingsElliott5AnnotationsTypesPitchforkTypeOuterBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -40264,7 +41106,8 @@ export interface NavigationBindingsElliott5AnnotationsTypesVerticalLineTypeConne
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -40286,13 +41129,20 @@ export interface NavigationBindingsElliott5AnnotationsTypesVerticalLineTypeConne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -40887,16 +41737,19 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -40919,21 +41772,29 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsShapeOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -40962,7 +41823,8 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -40991,12 +41853,14 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -41019,21 +41883,29 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsShapesOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -41051,16 +41923,19 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypeBackgroundOpt
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -41083,21 +41958,29 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypeBackgroundOpt
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -41115,16 +41998,19 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -41147,21 +42033,29 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypeLineOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -42762,7 +43656,8 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypesPitchforkTyp
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -42784,13 +43679,20 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypesPitchforkTyp
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -42831,7 +43733,8 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypesPitchforkTyp
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -42853,13 +43756,20 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypesPitchforkTyp
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -43287,7 +44197,8 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypesVerticalLine
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -43309,13 +44220,20 @@ export interface NavigationBindingsEllipseAnnotationAnnotationsTypesVerticalLine
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -43893,15 +44811,18 @@ export interface NavigationBindingsFibonacciAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -43923,22 +44844,30 @@ export interface NavigationBindingsFibonacciAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -43966,7 +44895,8 @@ export interface NavigationBindingsFibonacciAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -43995,11 +44925,13 @@ export interface NavigationBindingsFibonacciAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -44021,22 +44953,30 @@ export interface NavigationBindingsFibonacciAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -44053,15 +44993,18 @@ export interface NavigationBindingsFibonacciAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -44083,22 +45026,30 @@ export interface NavigationBindingsFibonacciAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -44115,15 +45066,18 @@ export interface NavigationBindingsFibonacciAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -44145,22 +45099,30 @@ export interface NavigationBindingsFibonacciAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -45761,7 +46723,8 @@ export interface NavigationBindingsFibonacciAnnotationsTypesPitchforkTypeInnerBa
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -45783,13 +46746,20 @@ export interface NavigationBindingsFibonacciAnnotationsTypesPitchforkTypeInnerBa
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -45830,7 +46800,8 @@ export interface NavigationBindingsFibonacciAnnotationsTypesPitchforkTypeOuterBa
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -45852,13 +46823,20 @@ export interface NavigationBindingsFibonacciAnnotationsTypesPitchforkTypeOuterBa
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -46286,7 +47264,8 @@ export interface NavigationBindingsFibonacciAnnotationsTypesVerticalLineTypeConn
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -46308,13 +47287,20 @@ export interface NavigationBindingsFibonacciAnnotationsTypesVerticalLineTypeConn
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -46891,15 +47877,18 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -46921,22 +47910,30 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -46964,7 +47961,8 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -46993,11 +47991,13 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -47019,22 +48019,30 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -47051,15 +48059,18 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypeBackgroundOp
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -47081,22 +48092,30 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypeBackgroundOp
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -47113,15 +48132,18 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypeLineOptions 
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -47143,22 +48165,30 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypeLineOptions 
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -48759,7 +49789,8 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypesPitchforkTy
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -48781,13 +49812,20 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypesPitchforkTy
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -48828,7 +49866,8 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypesPitchforkTy
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -48850,13 +49889,20 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypesPitchforkTy
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -49284,7 +50330,8 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypesVerticalLin
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -49306,13 +50353,20 @@ export interface NavigationBindingsFibonacciTimeZonesAnnotationsTypesVerticalLin
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -49896,15 +50950,18 @@ export interface NavigationBindingsHorizontalLineAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -49926,22 +50983,30 @@ export interface NavigationBindingsHorizontalLineAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -49969,7 +51034,8 @@ export interface NavigationBindingsHorizontalLineAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -49998,11 +51064,13 @@ export interface NavigationBindingsHorizontalLineAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -50024,22 +51092,30 @@ export interface NavigationBindingsHorizontalLineAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -50056,15 +51132,18 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypeBackgroundOption
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -50086,22 +51165,30 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypeBackgroundOption
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -50118,15 +51205,18 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -50148,22 +51238,30 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -51764,7 +52862,8 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypesPitchforkTypeIn
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -51786,13 +52885,20 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypesPitchforkTypeIn
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -51833,7 +52939,8 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypesPitchforkTypeOu
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -51855,13 +52962,20 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypesPitchforkTypeOu
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -52289,7 +53403,8 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypesVerticalLineTyp
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -52311,13 +53426,20 @@ export interface NavigationBindingsHorizontalLineAnnotationsTypesVerticalLineTyp
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -52892,15 +54014,18 @@ export interface NavigationBindingsInfinityLineAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -52922,22 +54047,30 @@ export interface NavigationBindingsInfinityLineAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -52965,7 +54098,8 @@ export interface NavigationBindingsInfinityLineAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -52994,11 +54128,13 @@ export interface NavigationBindingsInfinityLineAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -53020,22 +54156,30 @@ export interface NavigationBindingsInfinityLineAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -53052,15 +54196,18 @@ export interface NavigationBindingsInfinityLineAnnotationsTypeBackgroundOptions 
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -53082,22 +54229,30 @@ export interface NavigationBindingsInfinityLineAnnotationsTypeBackgroundOptions 
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -53114,15 +54269,18 @@ export interface NavigationBindingsInfinityLineAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -53144,22 +54302,30 @@ export interface NavigationBindingsInfinityLineAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -54760,7 +55926,8 @@ export interface NavigationBindingsInfinityLineAnnotationsTypesPitchforkTypeInne
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -54782,13 +55949,20 @@ export interface NavigationBindingsInfinityLineAnnotationsTypesPitchforkTypeInne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -54829,7 +56003,8 @@ export interface NavigationBindingsInfinityLineAnnotationsTypesPitchforkTypeOute
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -54851,13 +56026,20 @@ export interface NavigationBindingsInfinityLineAnnotationsTypesPitchforkTypeOute
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -55285,7 +56467,8 @@ export interface NavigationBindingsInfinityLineAnnotationsTypesVerticalLineTypeC
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -55307,13 +56490,20 @@ export interface NavigationBindingsInfinityLineAnnotationsTypesVerticalLineTypeC
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -55908,16 +57098,19 @@ export interface NavigationBindingsLabelAnnotationAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -55940,21 +57133,29 @@ export interface NavigationBindingsLabelAnnotationAnnotationsShapeOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -55983,7 +57184,8 @@ export interface NavigationBindingsLabelAnnotationAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -56012,12 +57214,14 @@ export interface NavigationBindingsLabelAnnotationAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -56040,21 +57244,29 @@ export interface NavigationBindingsLabelAnnotationAnnotationsShapesOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -56072,16 +57284,19 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypeBackgroundOptio
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -56104,21 +57319,29 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypeBackgroundOptio
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -56136,16 +57359,19 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -56168,21 +57394,29 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypeLineOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -57783,7 +59017,8 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypesPitchforkTypeI
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -57805,13 +59040,20 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypesPitchforkTypeI
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -57852,7 +59094,8 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypesPitchforkTypeO
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -57874,13 +59117,20 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypesPitchforkTypeO
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -58308,7 +59558,8 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypesVerticalLineTy
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -58330,13 +59581,20 @@ export interface NavigationBindingsLabelAnnotationAnnotationsTypesVerticalLineTy
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -58912,15 +60170,18 @@ export interface NavigationBindingsMeasureXAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -58942,22 +60203,30 @@ export interface NavigationBindingsMeasureXAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -58985,7 +60254,8 @@ export interface NavigationBindingsMeasureXAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -59014,11 +60284,13 @@ export interface NavigationBindingsMeasureXAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -59040,22 +60312,30 @@ export interface NavigationBindingsMeasureXAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -59072,15 +60352,18 @@ export interface NavigationBindingsMeasureXAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -59102,22 +60385,30 @@ export interface NavigationBindingsMeasureXAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -59134,15 +60425,18 @@ export interface NavigationBindingsMeasureXAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -59164,22 +60458,30 @@ export interface NavigationBindingsMeasureXAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -60780,7 +62082,8 @@ export interface NavigationBindingsMeasureXAnnotationsTypesPitchforkTypeInnerBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -60802,13 +62105,20 @@ export interface NavigationBindingsMeasureXAnnotationsTypesPitchforkTypeInnerBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -60849,7 +62159,8 @@ export interface NavigationBindingsMeasureXAnnotationsTypesPitchforkTypeOuterBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -60871,13 +62182,20 @@ export interface NavigationBindingsMeasureXAnnotationsTypesPitchforkTypeOuterBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -61305,7 +62623,8 @@ export interface NavigationBindingsMeasureXAnnotationsTypesVerticalLineTypeConne
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -61327,13 +62646,20 @@ export interface NavigationBindingsMeasureXAnnotationsTypesVerticalLineTypeConne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -61909,15 +63235,18 @@ export interface NavigationBindingsMeasureXYAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -61939,22 +63268,30 @@ export interface NavigationBindingsMeasureXYAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -61982,7 +63319,8 @@ export interface NavigationBindingsMeasureXYAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -62011,11 +63349,13 @@ export interface NavigationBindingsMeasureXYAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -62037,22 +63377,30 @@ export interface NavigationBindingsMeasureXYAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -62069,15 +63417,18 @@ export interface NavigationBindingsMeasureXYAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -62099,22 +63450,30 @@ export interface NavigationBindingsMeasureXYAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -62131,15 +63490,18 @@ export interface NavigationBindingsMeasureXYAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -62161,22 +63523,30 @@ export interface NavigationBindingsMeasureXYAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -63777,7 +65147,8 @@ export interface NavigationBindingsMeasureXYAnnotationsTypesPitchforkTypeInnerBa
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -63799,13 +65170,20 @@ export interface NavigationBindingsMeasureXYAnnotationsTypesPitchforkTypeInnerBa
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -63846,7 +65224,8 @@ export interface NavigationBindingsMeasureXYAnnotationsTypesPitchforkTypeOuterBa
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -63868,13 +65247,20 @@ export interface NavigationBindingsMeasureXYAnnotationsTypesPitchforkTypeOuterBa
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -64302,7 +65688,8 @@ export interface NavigationBindingsMeasureXYAnnotationsTypesVerticalLineTypeConn
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -64324,13 +65711,20 @@ export interface NavigationBindingsMeasureXYAnnotationsTypesVerticalLineTypeConn
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -64906,15 +66300,18 @@ export interface NavigationBindingsMeasureYAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -64936,22 +66333,30 @@ export interface NavigationBindingsMeasureYAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -64979,7 +66384,8 @@ export interface NavigationBindingsMeasureYAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -65008,11 +66414,13 @@ export interface NavigationBindingsMeasureYAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -65034,22 +66442,30 @@ export interface NavigationBindingsMeasureYAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -65066,15 +66482,18 @@ export interface NavigationBindingsMeasureYAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -65096,22 +66515,30 @@ export interface NavigationBindingsMeasureYAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -65128,15 +66555,18 @@ export interface NavigationBindingsMeasureYAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -65158,22 +66588,30 @@ export interface NavigationBindingsMeasureYAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -66774,7 +68212,8 @@ export interface NavigationBindingsMeasureYAnnotationsTypesPitchforkTypeInnerBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -66796,13 +68235,20 @@ export interface NavigationBindingsMeasureYAnnotationsTypesPitchforkTypeInnerBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -66843,7 +68289,8 @@ export interface NavigationBindingsMeasureYAnnotationsTypesPitchforkTypeOuterBac
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -66865,13 +68312,20 @@ export interface NavigationBindingsMeasureYAnnotationsTypesPitchforkTypeOuterBac
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -67299,7 +68753,8 @@ export interface NavigationBindingsMeasureYAnnotationsTypesVerticalLineTypeConne
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -67321,13 +68776,20 @@ export interface NavigationBindingsMeasureYAnnotationsTypesVerticalLineTypeConne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -68182,15 +69644,18 @@ export interface NavigationBindingsParallelChannelAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -68212,22 +69677,30 @@ export interface NavigationBindingsParallelChannelAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -68255,7 +69728,8 @@ export interface NavigationBindingsParallelChannelAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -68284,11 +69758,13 @@ export interface NavigationBindingsParallelChannelAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -68310,22 +69786,30 @@ export interface NavigationBindingsParallelChannelAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -68342,15 +69826,18 @@ export interface NavigationBindingsParallelChannelAnnotationsTypeBackgroundOptio
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -68372,22 +69859,30 @@ export interface NavigationBindingsParallelChannelAnnotationsTypeBackgroundOptio
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -68404,15 +69899,18 @@ export interface NavigationBindingsParallelChannelAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -68434,22 +69932,30 @@ export interface NavigationBindingsParallelChannelAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -70050,7 +71556,8 @@ export interface NavigationBindingsParallelChannelAnnotationsTypesPitchforkTypeI
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -70072,13 +71579,20 @@ export interface NavigationBindingsParallelChannelAnnotationsTypesPitchforkTypeI
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -70119,7 +71633,8 @@ export interface NavigationBindingsParallelChannelAnnotationsTypesPitchforkTypeO
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -70141,13 +71656,20 @@ export interface NavigationBindingsParallelChannelAnnotationsTypesPitchforkTypeO
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -70575,7 +72097,8 @@ export interface NavigationBindingsParallelChannelAnnotationsTypesVerticalLineTy
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -70597,13 +72120,20 @@ export interface NavigationBindingsParallelChannelAnnotationsTypesVerticalLineTy
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -71179,15 +72709,18 @@ export interface NavigationBindingsPitchforkAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -71209,22 +72742,30 @@ export interface NavigationBindingsPitchforkAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -71252,7 +72793,8 @@ export interface NavigationBindingsPitchforkAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -71281,11 +72823,13 @@ export interface NavigationBindingsPitchforkAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -71307,22 +72851,30 @@ export interface NavigationBindingsPitchforkAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -71339,15 +72891,18 @@ export interface NavigationBindingsPitchforkAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -71369,22 +72924,30 @@ export interface NavigationBindingsPitchforkAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -71401,15 +72964,18 @@ export interface NavigationBindingsPitchforkAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -71431,22 +72997,30 @@ export interface NavigationBindingsPitchforkAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -73047,7 +74621,8 @@ export interface NavigationBindingsPitchforkAnnotationsTypesPitchforkTypeInnerBa
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -73069,13 +74644,20 @@ export interface NavigationBindingsPitchforkAnnotationsTypesPitchforkTypeInnerBa
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -73116,7 +74698,8 @@ export interface NavigationBindingsPitchforkAnnotationsTypesPitchforkTypeOuterBa
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -73138,13 +74721,20 @@ export interface NavigationBindingsPitchforkAnnotationsTypesPitchforkTypeOuterBa
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -73572,7 +75162,8 @@ export interface NavigationBindingsPitchforkAnnotationsTypesVerticalLineTypeConn
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -73594,13 +75185,20 @@ export interface NavigationBindingsPitchforkAnnotationsTypesVerticalLineTypeConn
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -74176,15 +75774,18 @@ export interface NavigationBindingsRayAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -74206,22 +75807,30 @@ export interface NavigationBindingsRayAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -74249,7 +75858,8 @@ export interface NavigationBindingsRayAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -74278,11 +75888,13 @@ export interface NavigationBindingsRayAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -74304,22 +75916,30 @@ export interface NavigationBindingsRayAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -74336,15 +75956,18 @@ export interface NavigationBindingsRayAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -74366,22 +75989,30 @@ export interface NavigationBindingsRayAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -74398,15 +76029,18 @@ export interface NavigationBindingsRayAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -74428,22 +76062,30 @@ export interface NavigationBindingsRayAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -76044,7 +77686,8 @@ export interface NavigationBindingsRayAnnotationsTypesPitchforkTypeInnerBackgrou
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -76066,13 +77709,20 @@ export interface NavigationBindingsRayAnnotationsTypesPitchforkTypeInnerBackgrou
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -76113,7 +77763,8 @@ export interface NavigationBindingsRayAnnotationsTypesPitchforkTypeOuterBackgrou
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -76135,13 +77786,20 @@ export interface NavigationBindingsRayAnnotationsTypesPitchforkTypeOuterBackgrou
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -76569,7 +78227,8 @@ export interface NavigationBindingsRayAnnotationsTypesVerticalLineTypeConnectorO
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -76591,13 +78250,20 @@ export interface NavigationBindingsRayAnnotationsTypesVerticalLineTypeConnectorO
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -77192,16 +78858,19 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -77224,21 +78893,29 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsShapeOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -77267,7 +78944,8 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -77296,12 +78974,14 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -77324,21 +79004,29 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsShapesOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -77356,16 +79044,19 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypeBackgroundO
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -77388,21 +79079,29 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypeBackgroundO
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -77420,16 +79119,19 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypeLineOptions
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -77452,21 +79154,29 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypeLineOptions
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -79067,7 +80777,8 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypesPitchforkT
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -79089,13 +80800,20 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypesPitchforkT
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -79136,7 +80854,8 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypesPitchforkT
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -79158,13 +80877,20 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypesPitchforkT
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -79592,7 +81318,8 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypesVerticalLi
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -79614,13 +81341,20 @@ export interface NavigationBindingsRectangleAnnotationAnnotationsTypesVerticalLi
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -80209,15 +81943,18 @@ export interface NavigationBindingsSegmentAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -80239,22 +81976,30 @@ export interface NavigationBindingsSegmentAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -80282,7 +82027,8 @@ export interface NavigationBindingsSegmentAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -80311,11 +82057,13 @@ export interface NavigationBindingsSegmentAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -80337,22 +82085,30 @@ export interface NavigationBindingsSegmentAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -80369,15 +82125,18 @@ export interface NavigationBindingsSegmentAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -80399,22 +82158,30 @@ export interface NavigationBindingsSegmentAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -80431,15 +82198,18 @@ export interface NavigationBindingsSegmentAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -80461,22 +82231,30 @@ export interface NavigationBindingsSegmentAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -82077,7 +83855,8 @@ export interface NavigationBindingsSegmentAnnotationsTypesPitchforkTypeInnerBack
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -82099,13 +83878,20 @@ export interface NavigationBindingsSegmentAnnotationsTypesPitchforkTypeInnerBack
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -82146,7 +83932,8 @@ export interface NavigationBindingsSegmentAnnotationsTypesPitchforkTypeOuterBack
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -82168,13 +83955,20 @@ export interface NavigationBindingsSegmentAnnotationsTypesPitchforkTypeOuterBack
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -82602,7 +84396,8 @@ export interface NavigationBindingsSegmentAnnotationsTypesVerticalLineTypeConnec
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -82624,13 +84419,20 @@ export interface NavigationBindingsSegmentAnnotationsTypesVerticalLineTypeConnec
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -83212,15 +85014,18 @@ export interface NavigationBindingsTimeCyclesAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -83242,22 +85047,30 @@ export interface NavigationBindingsTimeCyclesAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -83285,7 +85098,8 @@ export interface NavigationBindingsTimeCyclesAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -83314,11 +85128,13 @@ export interface NavigationBindingsTimeCyclesAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -83340,22 +85156,30 @@ export interface NavigationBindingsTimeCyclesAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -83372,15 +85196,18 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypeBackgroundOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -83402,22 +85229,30 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypeBackgroundOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -83434,15 +85269,18 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -83464,22 +85302,30 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -85080,7 +86926,8 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypesPitchforkTypeInnerB
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -85102,13 +86949,20 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypesPitchforkTypeInnerB
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -85149,7 +87003,8 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypesPitchforkTypeOuterB
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -85171,13 +87026,20 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypesPitchforkTypeOuterB
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -85605,7 +87467,8 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypesVerticalLineTypeCon
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -85627,13 +87490,20 @@ export interface NavigationBindingsTimeCyclesAnnotationsTypesVerticalLineTypeCon
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -86211,15 +88081,18 @@ export interface NavigationBindingsVerticalArrowAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -86241,22 +88114,30 @@ export interface NavigationBindingsVerticalArrowAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -86284,7 +88165,8 @@ export interface NavigationBindingsVerticalArrowAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -86313,11 +88195,13 @@ export interface NavigationBindingsVerticalArrowAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -86339,22 +88223,30 @@ export interface NavigationBindingsVerticalArrowAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -86371,15 +88263,18 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypeBackgroundOptions
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -86401,22 +88296,30 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypeBackgroundOptions
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -86433,15 +88336,18 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -86463,22 +88369,30 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -88079,7 +89993,8 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypesPitchforkTypeInn
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -88101,13 +90016,20 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypesPitchforkTypeInn
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -88148,7 +90070,8 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypesPitchforkTypeOut
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -88170,13 +90093,20 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypesPitchforkTypeOut
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -88604,7 +90534,8 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypesVerticalLineType
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -88626,13 +90557,20 @@ export interface NavigationBindingsVerticalArrowAnnotationsTypesVerticalLineType
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -89210,15 +91148,18 @@ export interface NavigationBindingsVerticalCounterAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -89240,22 +91181,30 @@ export interface NavigationBindingsVerticalCounterAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -89283,7 +91232,8 @@ export interface NavigationBindingsVerticalCounterAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -89312,11 +91262,13 @@ export interface NavigationBindingsVerticalCounterAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -89338,22 +91290,30 @@ export interface NavigationBindingsVerticalCounterAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -89370,15 +91330,18 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypeBackgroundOptio
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -89400,22 +91363,30 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypeBackgroundOptio
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -89432,15 +91403,18 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -89462,22 +91436,30 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -91078,7 +93060,8 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypesPitchforkTypeI
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -91100,13 +93083,20 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypesPitchforkTypeI
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -91147,7 +93137,8 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypesPitchforkTypeO
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -91169,13 +93160,20 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypesPitchforkTypeO
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -91603,7 +93601,8 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypesVerticalLineTy
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -91625,13 +93624,20 @@ export interface NavigationBindingsVerticalCounterAnnotationsTypesVerticalLineTy
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -92227,16 +94233,19 @@ export interface NavigationBindingsVerticalLabelAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -92259,21 +94268,29 @@ export interface NavigationBindingsVerticalLabelAnnotationsShapeOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -92302,7 +94319,8 @@ export interface NavigationBindingsVerticalLabelAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -92331,12 +94349,14 @@ export interface NavigationBindingsVerticalLabelAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -92359,21 +94379,29 @@ export interface NavigationBindingsVerticalLabelAnnotationsShapesOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -92391,16 +94419,19 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypeBackgroundOptions
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -92423,21 +94454,29 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypeBackgroundOptions
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -92455,16 +94494,19 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highcharts, Highstock) The height of the shape.
+     * (Highcharts, Highstock) The height of the `rect` shape. Can be defined in
+     * pixels or yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape.
+     * (Highcharts, Highstock) The radius of the `circle` shape. Can be defined
+     * in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highcharts, Highstock) The radius of the shape in y direction. Used for
-     * the ellipse.
+     * (Highcharts, Highstock) The radius of the `ellipse` shape in y direction.
+     * Can be defined in pixels or yAxis units, if shapes.yAxis index is
+     * defined.
      */
     ry?: number;
     /**
@@ -92487,21 +94529,29 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypeLineOptions {
     strokeWidth?: number;
     /**
      * (Highcharts, Highstock) The type of the shape. Available options are
-     * circle, rect and ellipse.
+     * `circle`, `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highcharts, Highstock) The width of the shape.
+     * (Highcharts, Highstock) The width of the `rect` shape. Can be defined in
+     * pixels or xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highcharts, Highstock) The xAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The xAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highcharts, Highstock) The yAxis index to which the points should be
-     * attached. Used for the ellipse.
+     * (Highcharts, Highstock) The yAxis index which should be used for
+     * annotation's sizes and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -94102,7 +96152,8 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypesPitchforkTypeInn
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -94124,13 +96175,20 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypesPitchforkTypeInn
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -94171,7 +96229,8 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypesPitchforkTypeOut
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -94193,13 +96252,20 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypesPitchforkTypeOut
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -94627,7 +96693,8 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypesVerticalLineType
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -94649,13 +96716,20 @@ export interface NavigationBindingsVerticalLabelAnnotationsTypesVerticalLineType
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -95227,15 +97301,18 @@ export interface NavigationBindingsVerticalLineAnnotationsShapeOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -95257,22 +97334,30 @@ export interface NavigationBindingsVerticalLineAnnotationsShapeOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -95300,7 +97385,8 @@ export interface NavigationBindingsVerticalLineAnnotationsShapesOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
@@ -95329,11 +97415,13 @@ export interface NavigationBindingsVerticalLineAnnotationsShapesOptions {
      */
     points?: Array<AnnotationMockPointOptions>;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -95355,22 +97443,30 @@ export interface NavigationBindingsVerticalLineAnnotationsShapesOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -95387,15 +97483,18 @@ export interface NavigationBindingsVerticalLineAnnotationsTypeBackgroundOptions 
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -95417,22 +97516,30 @@ export interface NavigationBindingsVerticalLineAnnotationsTypeBackgroundOptions 
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -95449,15 +97556,18 @@ export interface NavigationBindingsVerticalLineAnnotationsTypeLineOptions {
      */
     fill?: ColorType;
     /**
-     * (Highstock) The height of the shape.
+     * (Highstock) The height of the `rect` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     height?: number;
     /**
-     * (Highstock) The radius of the shape.
+     * (Highstock) The radius of the `circle` shape. Can be defined in pixels or
+     * yAxis units, if shapes.yAxis index is defined.
      */
     r?: number;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -95479,22 +97589,30 @@ export interface NavigationBindingsVerticalLineAnnotationsTypeLineOptions {
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The type of the shape. Available options are circle, rect and
-     * ellipse.
+     * (Highstock) The type of the shape. Available options are `circle`,
+     * `rect`, `ellipse` and `path`.
      */
     type?: string;
     /**
-     * (Highstock) The width of the shape.
+     * (Highstock) The width of the `rect` shape. Can be defined in pixels or
+     * xAxis units, if shapes.xAxis index is defined.
      */
     width?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -97095,7 +99213,8 @@ export interface NavigationBindingsVerticalLineAnnotationsTypesPitchforkTypeInne
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -97117,13 +99236,20 @@ export interface NavigationBindingsVerticalLineAnnotationsTypesPitchforkTypeInne
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -97164,7 +99290,8 @@ export interface NavigationBindingsVerticalLineAnnotationsTypesPitchforkTypeOute
      */
     fill?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -97186,13 +99313,20 @@ export interface NavigationBindingsVerticalLineAnnotationsTypesPitchforkTypeOute
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -97620,7 +99754,8 @@ export interface NavigationBindingsVerticalLineAnnotationsTypesVerticalLineTypeC
     fill?: ColorType;
     markerEnd?: string;
     /**
-     * (Highstock) The radius of the shape in y direction. Used for the ellipse.
+     * (Highstock) The radius of the `ellipse` shape in y direction. Can be
+     * defined in pixels or yAxis units, if shapes.yAxis index is defined.
      */
     ry?: number;
     /**
@@ -97642,13 +99777,20 @@ export interface NavigationBindingsVerticalLineAnnotationsTypesVerticalLineTypeC
      */
     strokeWidth?: number;
     /**
-     * (Highstock) The xAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The xAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape width, and all shapes point and
+     * points coordinates.
      */
     xAxis?: number;
     /**
-     * (Highstock) The yAxis index to which the points should be attached. Used
-     * for the ellipse.
+     * (Highstock) The yAxis index which should be used for annotation's sizes
+     * and points coordinates conversion.
+     *
+     * This option is used for `rect` shape height, `circle` shape radius,
+     * `ellipse` y direction radius, and all shapes point and points
+     * coordinates.
      */
     yAxis?: number;
 }
@@ -98613,13 +100755,6 @@ export interface NavigatorSeriesDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
     zIndex?: number;
 }
 export interface NavigatorSeriesMarkerOptions {
@@ -99482,6 +101617,14 @@ export interface NavigatorXAxisOptions {
      * option with the `minPadding` option to control the axis start.
      */
     startOnTick?: boolean;
+    /**
+     * (Highcharts, Highstock, Gantt) For vertical axes only. Setting the static
+     * scale ensures that each tick unit is translated into a fixed pixel
+     * height. For example, setting the static scale to 24 results in each Y
+     * axis category taking up 24 pixels, and the height of the chart adjusts.
+     * Adding or removing items will make the chart resize.
+     */
+    staticScale?: number;
     /**
      * (Highcharts, Highstock, Gantt) The amount of ticks to draw on the axis.
      * This opens up for aligning the ticks of multiple charts or panes within a
@@ -100749,11 +102892,11 @@ export interface NavigatorYAxisOptions {
      */
     startOnTick?: boolean;
     /**
-     * (Gantt) For vertical axes only. Setting the static scale ensures that
-     * each tick unit is translated into a fixed pixel height. For example,
-     * setting the static scale to 24 results in each Y axis category taking up
-     * 24 pixels, and the height of the chart adjusts. Adding or removing items
-     * will make the chart resize.
+     * (Highcharts, Highstock, Gantt) For vertical axes only. Setting the static
+     * scale ensures that each tick unit is translated into a fixed pixel
+     * height. For example, setting the static scale to 24 results in each Y
+     * axis category taking up 24 pixels, and the height of the chart adjusts.
+     * Adding or removing items will make the chart resize.
      */
     staticScale?: number;
     /**
@@ -101349,7 +103492,7 @@ export interface NoDataOptions {
      * (Highcharts, Highstock, Gantt) Whether to insert the label as HTML, or as
      * pseudo-HTML rendered with SVG.
      */
-    useHTML?: boolean;
+    useHTML?: object;
 }
 /**
  * (Highcharts, Highstock, Gantt) The position of the no-data label, relative to
@@ -101457,8 +103600,7 @@ export interface Options {
      * a separate series.
      *
      * Color axis does not work with: `sankey`, `sunburst`, `dependencywheel`,
-     * `networkgraph`, `wordcloud`, `venn`, `gauge` and `solidgauge` series
-     * types.
+     * `networkgraph`, `venn`, `gauge` and `solidgauge` series types.
      *
      * Since v7.2.0 `colorAxis` can also be an array of options objects.
      *
@@ -101733,7 +103875,7 @@ export interface PaneBackgroundOptions {
      */
     borderWidth?: number;
     /**
-     * (Highcharts) The class name for this background.
+     * (Highcharts) An additional class name to apply to the pane background.
      */
     className?: string;
     /**
@@ -101766,7 +103908,7 @@ export interface PaneOptions {
      * used in `Highcharts.setOptions` for theming, the background must be a
      * single item.
      */
-    background?: Array<PaneBackgroundOptions>;
+    background?: (PaneBackgroundOptions|Array<PaneBackgroundOptions>);
     /**
      * (Highcharts) The center of a polar chart or angular gauge, given as an
      * array of [x, y] positions. Positions can be given as integers that
@@ -101775,9 +103917,7 @@ export interface PaneOptions {
     center?: Array<(string|number)>;
     /**
      * (Highcharts) The end angle of the polar X axis or gauge value axis, given
-     * in degrees where 0 is north. Defaults to startAngle
-     *
-     * + 360.
+     * in degrees where 0 is north. Defaults to startAngle plus 360.
      */
     endAngle?: number;
     /**
@@ -101793,7 +103933,7 @@ export interface PaneOptions {
     size?: (number|string);
     /**
      * (Highcharts) The start angle of the polar X axis or gauge axis, given in
-     * degrees where 0 is north. Defaults to 0.
+     * degrees where 0 is north.
      */
     startAngle?: number;
 }
@@ -102208,8 +104348,13 @@ export interface PlotAbandsOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotAbandsDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -102389,13 +104534,21 @@ export interface PlotAbandsOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -102440,8 +104593,13 @@ export interface PlotAbandsOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -102538,7 +104696,7 @@ export interface PlotAbandsOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -102897,14 +105055,6 @@ export interface PlotAdDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -103357,8 +105507,13 @@ export interface PlotAoOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotAoDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -103543,13 +105698,21 @@ export interface PlotAoOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     pointPadding?: number;
@@ -103595,8 +105758,13 @@ export interface PlotAoOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -103692,7 +105860,7 @@ export interface PlotAoOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -104048,14 +106216,6 @@ export interface PlotApoDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -104638,14 +106798,6 @@ export interface PlotAreaDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -105210,14 +107362,6 @@ export interface PlotAreasplineDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -105843,14 +107987,6 @@ export interface PlotAroonDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -106236,14 +108372,6 @@ export interface PlotAroonoscillatorDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -106705,14 +108833,6 @@ export interface PlotAtrDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -107276,14 +109396,6 @@ export interface PlotBbDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -107675,8 +109787,13 @@ export interface PlotBellcurveOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotBellcurveDataSortingOptions);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -107861,13 +109978,21 @@ export interface PlotBellcurveOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -107957,8 +110082,13 @@ export interface PlotBellcurveOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -108062,7 +110192,7 @@ export interface PlotBellcurveOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -108677,14 +110807,6 @@ export interface PlotBulletDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) Options for the connector in the _Series on point_ feature.
@@ -109233,14 +111355,6 @@ export interface PlotCciDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -109687,8 +111801,13 @@ export interface PlotChaikinOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotChaikinDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -109864,13 +111983,21 @@ export interface PlotChaikinOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -109915,8 +112042,13 @@ export interface PlotChaikinOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -110012,7 +112144,7 @@ export interface PlotChaikinOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -110368,14 +112500,6 @@ export interface PlotCmfDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -110828,8 +112952,13 @@ export interface PlotCmoOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotCmoDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -111004,13 +113133,21 @@ export interface PlotCmoOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -111055,8 +113192,13 @@ export interface PlotCmoOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -111152,7 +113294,7 @@ export interface PlotCmoOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -111509,14 +113651,6 @@ export interface PlotColumnDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -111870,8 +114004,13 @@ export interface PlotColumnOptions {
      */
     depth?: number;
     /**
-     * (Highcharts, Highstock) A description of the series to add to the screen
-     * reader information about the series.
+     * (Highcharts, Highstock) Deprecated. Use
+     * plotOptions.series.accessibility.description instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -112056,14 +114195,21 @@ export interface PlotColumnOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts, Highstock) Same as accessibility.point.descriptionFormat,
-     * but for an individual series. Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormat instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts, Highstock) Same as
-     * accessibility.series.descriptionFormatter, but for an individual series.
-     * Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -112208,8 +114354,13 @@ export interface PlotColumnOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highcharts, Highstock) If set to `true`, the accessibility module will
-     * skip past the points in this series for keyboard navigation.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.keyboardNavigation instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -112314,7 +114465,7 @@ export interface PlotColumnOptions {
      * individual non-cartesian series. By default zooming is enabled for all
      * series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -112875,8 +115026,13 @@ export interface PlotColumnrangeOptions {
      */
     depth?: number;
     /**
-     * (Highcharts, Highstock) A description of the series to add to the screen
-     * reader information about the series.
+     * (Highcharts, Highstock) Deprecated. Use
+     * plotOptions.series.accessibility.description instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -113054,14 +115210,21 @@ export interface PlotColumnrangeOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts, Highstock) Same as accessibility.point.descriptionFormat,
-     * but for an individual series. Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormat instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts, Highstock) Same as
-     * accessibility.series.descriptionFormatter, but for an individual series.
-     * Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -113206,8 +115369,13 @@ export interface PlotColumnrangeOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highcharts, Highstock) If set to `true`, the accessibility module will
-     * skip past the points in this series for keyboard navigation.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.keyboardNavigation instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -113284,7 +115452,7 @@ export interface PlotColumnrangeOptions {
      * individual non-cartesian series. By default zooming is enabled for all
      * series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -113367,6 +115535,622 @@ export interface PlotColumnTooltipPositionOptions {
      * (Highcharts, Highstock) Y pixel offset from the given position. Can be
      * used to shy away from axis lines, grid lines etc to avoid the tooltip
      * overlapping other elements.
+     */
+    y?: number;
+}
+/**
+ * (Highcharts, Highstock, Highmaps, Gantt) Enable or disable the initial
+ * animation when a series is displayed for the `dataLabels`. The animation can
+ * also be set as a configuration object. Please note that this option only
+ * applies to the initial animation.
+ *
+ * For other animations, see chart.animation and the animation parameter under
+ * the API methods. The following properties are supported:
+ *
+ * - `defer`: The animation delay time in milliseconds.
+ */
+export interface PlotContourDataLabelsAnimationOptions {
+    /**
+     * (Highcharts, Highstock, Highmaps, Gantt) The animation delay time in
+     * milliseconds. Set to `0` to render the data labels immediately. As
+     * `undefined` inherits defer time from the series.animation.defer.
+     */
+    defer?: number;
+}
+/**
+ * (Highcharts, Highstock) Options for the series data sorting.
+ */
+export interface PlotContourDataSortingOptions {
+    /**
+     * (Highcharts, Highstock) Enable or disable data sorting for the series.
+     * Use xAxis.reversed to change the sorting order.
+     */
+    enabled?: boolean;
+    /**
+     * (Highcharts, Highstock) Whether to allow matching points by name in an
+     * update. If this option is disabled, points will be matched by order.
+     */
+    matchByName?: boolean;
+    /**
+     * (Highcharts, Highstock) Determines what data value should be used to sort
+     * by.
+     */
+    sortKey?: string;
+}
+/**
+ * (Highcharts, Highmaps) Animation when hovering over the marker.
+ */
+export interface PlotContourMarkerStatesHoverAnimationOptions {
+    duration?: number;
+}
+/**
+ * (Highcharts, Highmaps) Options for the _Series on point_ feature. Only `pie`
+ * and `sunburst` series are supported at this moment.
+ */
+export interface PlotContourOnPointOptions {
+    /**
+     * (Highcharts, Highmaps) Options for the connector in the _Series on point_
+     * feature.
+     *
+     * In styled mode, the connector can be styled with the
+     * `.highcharts-connector-seriesonpoint` class name.
+     */
+    connectorOptions?: (PlotContourOnPointConnectorOptions|SVGAttributes);
+    /**
+     * (Highcharts, Highmaps) The `id` of the point that we connect the series
+     * to. Only points with a given `plotX` and `plotY` values and map points
+     * are valid.
+     */
+    id?: string;
+    /**
+     * (Highcharts, Highmaps) Options allowing to set a position and an offset
+     * of the series in the _Series on point_ feature.
+     */
+    position?: (object|PlotContourOnPointPositionOptions);
+}
+/**
+ * (Highcharts, Highmaps) A contour plot is a graphical representation of
+ * three-dimensional data
+ *
+ * Configuration options for the series are given in three levels:
+ *
+ * 1. Options for all series in a chart are defined in the plotOptions.series
+ * object.
+ *
+ * 2. Options for all `contour` series are defined in plotOptions.contour.
+ *
+ * 3. Options for one single series are given in the series instance array. (see
+ * online documentation for example)
+ *
+ * **TypeScript:**
+ *
+ * - type option should always be set, otherwise a broad set of unsupported
+ * options is allowed.
+ *
+ * - when accessing an array of series, the combined set of all series types is
+ * represented by Highcharts.SeriesOptionsType . Narrowing down to the specific
+ * type can be done by checking the `type` property. (see online documentation
+ * for example)
+ */
+export interface PlotContourOptions {
+    /**
+     * (Highcharts, Highmaps) Accessibility options for a series.
+     */
+    accessibility?: SeriesAccessibilityOptionsObject;
+    /**
+     * (Highmaps) Whether all areas of the map defined in `mapData` should be
+     * rendered. If `true`, areas which don't correspond to a data point, are
+     * rendered as `null` points. If `false`, those areas are skipped.
+     */
+    allAreas?: boolean;
+    /**
+     * (Highcharts, Highmaps) Allow this series' points to be selected by
+     * clicking on the graphic (columns, point markers, pie slices, map areas
+     * etc).
+     *
+     * The selected points can be handled by point select and unselect events,
+     * or collectively by the getSelectedPoints function.
+     *
+     * And alternative way of selecting points is through dragging.
+     */
+    allowPointSelect?: boolean;
+    /**
+     * (Highcharts, Highmaps) Enable or disable the initial animation when a
+     * series is displayed. The animation can also be set as a configuration
+     * object. Please note that this option only applies to the initial
+     * animation of the series itself. For other animations, see chart.animation
+     * and the animation parameter under the API methods. The following
+     * properties are supported:
+     *
+     * - `defer`: The animation delay time in milliseconds.
+     *
+     * - `duration`: The duration of the animation in milliseconds. (Defaults to
+     * `1000`)
+     *
+     * - `easing`: Can be a string reference to an easing function set on the
+     * `Math` object or a function. See the _Custom easing function_ demo below.
+     * (Defaults to `easeInOutSine`)
+     *
+     * Due to poor performance, animation is disabled in old IE browsers for
+     * several chart types.
+     */
+    animation?: (boolean|AnimationOptionsObject);
+    /**
+     * (Highcharts, Highmaps) Sets the color blending in the boost module.
+     */
+    boostBlending?: OptionsBoostBlendingValue;
+    /**
+     * (Highcharts, Highmaps) Set the point threshold for when a series should
+     * enter boost mode.
+     *
+     * Setting it to e.g. 2000 will cause the series to enter boost mode when
+     * there are 2000 or more points in the series.
+     *
+     * To disable boosting on the series, set the `boostThreshold` to 0. Setting
+     * it to 1 will force boosting.
+     *
+     * Note that the cropThreshold also affects this setting. When zooming in on
+     * a series that has fewer points than the `cropThreshold`, all points are
+     * rendered although outside the visible plot area, and the `boostThreshold`
+     * won't take effect.
+     */
+    boostThreshold?: number;
+    /**
+     * (Highmaps) The border color of the map areas.
+     *
+     * In styled mode, the border stroke is given in the `.highcharts-point`
+     * class.
+     */
+    borderColor?: (ColorString|GradientColorObject|PatternObject);
+    /**
+     * (Highmaps) The border width of each map area.
+     *
+     * In styled mode, the border stroke width is given in the
+     * `.highcharts-point` class.
+     */
+    borderWidth?: number;
+    /**
+     * (Highcharts, Highmaps) An additional class name to apply to the series'
+     * graphical elements. This option does not replace default class names of
+     * the graphical element. Changes to the series' color will also be
+     * reflected in a chart's legend and tooltip.
+     */
+    className?: string;
+    /**
+     * (Highcharts, Highmaps) Disable this option to allow series rendering in
+     * the whole plotting area.
+     *
+     * **Note:** Clipping should be always enabled when chart.zoomType is set
+     */
+    clip?: boolean;
+    /**
+     * (Highcharts, Highmaps) The main color of the series. In line type series
+     * it applies to the line and the point markers unless otherwise specified.
+     * In bar type series it applies to the bars unless a color is specified per
+     * point. The default value is pulled from the `options.colors` array.
+     *
+     * In styled mode, the color can be defined by the colorIndex option. Also,
+     * the series color can be set with the `.highcharts-series`,
+     * `.highcharts-color-{n}`, `.highcharts-{type}-series` or
+     * `.highcharts-series-{n}` class, or individual classes given by the
+     * `className` option.
+     */
+    color?: (ColorString|GradientColorObject|PatternObject);
+    /**
+     * (Highcharts, Highstock, Highmaps) When using dual or multiple color axes,
+     * this number defines which colorAxis the particular series is connected
+     * to. It refers to either the axis id or the index of the axis in the
+     * colorAxis array, with 0 being the first. Set this option to false to
+     * prevent a series from connecting to the default color axis.
+     *
+     * Since v7.2.0 the option can also be an axis id or an axis index instead
+     * of a boolean flag.
+     */
+    colorAxis?: (boolean|number|string);
+    /**
+     * (Highcharts, Highmaps) Styled mode only. A specific color index to use
+     * for the series, so its graphic representations are given the class name
+     * `highcharts-color-{n}`.
+     *
+     * Since v11, CSS variables on the form `--highcharts-color-{n}` make
+     * changing the color scheme very convenient.
+     */
+    colorIndex?: number;
+    /**
+     * (Highcharts, Highstock, Highmaps) This must be set to `'value'` to make
+     * the colorAxis track with the contour plot.
+     */
+    colorKey?: string;
+    /**
+     * (Highcharts, Highmaps) The interval between contour lines. Determines the
+     * spacing of value levels where lines are drawn on the plot. By default,
+     * the interval is calculated using the value range.
+     */
+    contourInterval?: number;
+    /**
+     * (Highcharts, Highmaps) The offset for contour line positioning. Shifts
+     * the contour levels so lines and bands are drawn at `contourOffset + n *
+     * contourInterval` instead of `n * contourInterval`.
+     *
+     * Example: with `contourInterval: 10` and `contourOffset: 5`, levels are at
+     * 5, 15, 25, etc. Use this to align levels with a reference value without
+     * changing the data. Non-positive values are treated as 0.
+     */
+    contourOffset?: number;
+    /**
+     * (Highcharts, Highstock, Gantt) When true, each point or column edge is
+     * rounded to its nearest pixel in order to render sharp on screen. In some
+     * cases, when there are a lot of densely packed columns, this leads to
+     * visible difference in column widths or distance between columns. In these
+     * cases, setting `crisp` to `false` may look better, even though each
+     * column is rendered blurry.
+     */
+    crisp?: boolean;
+    /**
+     * (Highcharts, Highmaps) You can set the cursor to "pointer" if you have
+     * click events attached to the series, to signal to the user that the
+     * points and lines can be clicked.
+     *
+     * In styled mode, the series cursor can be set with the same classes as
+     * listed under series.color.
+     */
+    cursor?: (string|CursorValue);
+    /**
+     * (Highcharts, Highmaps) A reserved subspace to store options and values
+     * for customized functionality. Here you can add additional data for your
+     * own event callbacks and formatter callbacks.
+     */
+    custom?: Dictionary<any>;
+    /**
+     * (Highcharts, Highstock, Highmaps, Gantt) Options for the series data
+     * labels, appearing next to each data point.
+     *
+     * Since v6.2.0, multiple data labels can be applied to each single point by
+     * defining them as an array of configs.
+     *
+     * In styled mode, the data labels can be styled with the
+     * `.highcharts-data-label-box` and `.highcharts-data-label` class names
+     * (see example).
+     */
+    dataLabels?: (PlotContourDataLabelsOptions|Array<PlotContourDataLabelsOptions>);
+    /**
+     * (Highcharts, Highstock) Options for the series data sorting.
+     */
+    dataSorting?: (DataSortingOptionsObject|PlotContourDataSortingOptions);
+    /**
+     * (Highcharts, Highmaps) Deprecated. Use
+     * plotOptions.series.accessibility.description instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
+     */
+    description?: string;
+    /**
+     * (Highcharts, Highmaps) Enable or disable the mouse tracking for a
+     * specific series. This includes point tooltips and click events on graphs
+     * and points. For large datasets it improves performance.
+     */
+    enableMouseTracking?: boolean;
+    /**
+     * (Highcharts, Highmaps) General event handlers for the series items. These
+     * event hooks can also be attached to the series at run time using the
+     * `Highcharts.addEvent` function.
+     */
+    events?: SeriesEventsOptionsObject;
+    /**
+     * (Highcharts, Highmaps) Determines whether the series should look for the
+     * nearest point in both dimensions or just the x-dimension when hovering
+     * the series. Defaults to `'xy'` for scatter series and `'x'` for most
+     * other series. If the data has duplicate x-values, it is recommended to
+     * set this to `'xy'` to allow hovering over all points.
+     *
+     * Applies only to series types using nearest neighbor search (not direct
+     * hover) for tooltip.
+     */
+    findNearestPointBy?: OptionsFindNearestPointByValue;
+    /**
+     * (Highcharts, Highmaps) Highlight only the hovered point and fade the
+     * remaining points.
+     *
+     * Scatter-type series require enabling the 'inactive' marker state and
+     * adjusting opacity. Note that this approach could affect performance with
+     * large datasets.
+     */
+    inactiveOtherPoints?: boolean;
+    /**
+     * (Highcharts, Highmaps) When set to `false` will prevent the series data
+     * from being included in any form of data export.
+     *
+     * Since version 6.0.0 until 7.1.0 the option was existing undocumented as
+     * `includeInCSVExport`.
+     */
+    includeInDataExport?: boolean;
+    /**
+     * (Highmaps) What property to join the `mapData` to the value data. For
+     * example, if joinBy is "code", the mapData items with a specific code is
+     * merged into the data with the same code. For maps loaded from GeoJSON,
+     * the keys may be held in each point's `properties` object.
+     *
+     * The joinBy option can also be an array of two values, where the first
+     * points to a key in the `mapData`, and the second points to another key in
+     * the `data`.
+     *
+     * When joinBy is `null`, the map items are joined by their position in the
+     * array, which performs much better in maps with many data points. This is
+     * the recommended option if you are printing more than a thousand data
+     * points and have a backend that can preprocess the data into a parallel
+     * array of the mapData.
+     */
+    joinBy?: (string|Array<string>);
+    /**
+     * (Highcharts, Highmaps) An array specifying which option maps to which key
+     * in the data point array. This makes it convenient to work with
+     * unstructured data arrays from different sources.
+     */
+    keys?: Array<string>;
+    /**
+     * (Highcharts, Highstock, Gantt) Series labels are placed as close to the
+     * series as possible in a natural way, seeking to avoid other series. The
+     * goal of this feature is to make the chart more easily readable, like if a
+     * human designer placed the labels in the optimal position.
+     *
+     * The series labels currently work with series types having a `graph` or an
+     * `area`.
+     */
+    label?: SeriesLabelOptionsObject;
+    /**
+     * (Highcharts, Highmaps) What type of legend symbol to render for this
+     * series. Can be one of `areaMarker`, `lineMarker` or `rectangle`.
+     */
+    legendSymbol?: OptionsLegendSymbolValue;
+    /**
+     * (Highcharts, Highstock) This setting controls the visibility and size of
+     * contour lines. For now, only '1' and '0' are valid options, effectively
+     * controlling the visibility of the lines.
+     */
+    lineWidth?: number;
+    /**
+     * (Highcharts, Highstock, Gantt) The id of another series to link to.
+     * Additionally, the value can be ":previous" to link to the previous
+     * series. When two series are linked, only the first one appears in the
+     * legend. Toggling the visibility of this also toggles the linked series.
+     *
+     * If master series uses data sorting and linked series does not have its
+     * own sorting definition, the linked series will be sorted in the same
+     * order as the master one.
+     *
+     * If a `compare` value is not set on a linked series, it will be inherited
+     * from the parent series.
+     */
+    linkedTo?: string;
+    /**
+     * (Highcharts, Highmaps) Options for the point markers of line and
+     * scatter-like series. Properties like `fillColor`, `lineColor` and
+     * `lineWidth` define the visual appearance of the markers. The `symbol`
+     * option defines the shape. Other series types, like column series, don't
+     * have markers, but have visual options on the series level instead.
+     *
+     * In styled mode, the markers can be styled with the `.highcharts-point`,
+     * `.highcharts-point-hover` and `.highcharts-point-select` class names.
+     */
+    marker?: PointMarkerOptionsObject;
+    /**
+     * (Highcharts, Highmaps) The color for the parts of the graph or points
+     * that are below the threshold. Note that `zones` takes precedence over the
+     * negative color. Using `negativeColor` is equivalent to applying a zone
+     * with value of 0.
+     */
+    negativeColor?: (ColorString|GradientColorObject|PatternObject);
+    /**
+     * (Highcharts, Highstock) Whether or not data-points with the value of
+     * `null` should be interactive. When this is set to `true`, tooltips may
+     * highlight these points, and this option also enables keyboard navigation
+     * for such points. Format options for such points include `nullFormat` and
+     * `nullFormater`. Works for these series: `line`, `spline`, `area`,
+     * `area-spline`, `column`, `bar`, and* `timeline`.
+     */
+    nullInteraction?: (boolean|undefined);
+    /**
+     * (Highcharts, Highmaps) Options for the _Series on point_ feature. Only
+     * `pie` and `sunburst` series are supported at this moment.
+     */
+    onPoint?: (object|PlotContourOnPointOptions);
+    /**
+     * (Highcharts, Highmaps) Opacity of a series parts: line, fill (e.g. area)
+     * and dataLabels.
+     */
+    opacity?: number;
+    /**
+     * (Highcharts, Highmaps) Properties for each single point.
+     */
+    point?: PlotSeriesPointOptions;
+    /**
+     * (Highcharts, Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormat instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
+     */
+    pointDescriptionFormat?: Function;
+    /**
+     * (Highcharts, Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
+     */
+    pointDescriptionFormatter?: Function;
+    /**
+     * (Highcharts, Highstock) When true, X values in the data set are relative
+     * to the current `pointStart`, `pointInterval` and `pointIntervalUnit`
+     * settings. This allows compression of the data for datasets with irregular
+     * X values.
+     *
+     * The real X values are computed on the formula `f(x) = ax + b`, where `a`
+     * is the `pointInterval` (optionally with a time unit given by
+     * `pointIntervalUnit`), and `b` is the `pointStart`.
+     */
+    relativeXValue?: boolean;
+    /**
+     * (Highcharts, Highmaps) Whether to select the series initially. If
+     * `showCheckbox` is true, the checkbox next to the series name in the
+     * legend will be checked for a selected series.
+     */
+    selected?: boolean;
+    /**
+     * (Highcharts, Highmaps) If true, a checkbox is displayed next to the
+     * legend item to allow selecting the series. The state of the checkbox is
+     * determined by the `selected` option.
+     */
+    showCheckbox?: boolean;
+    /**
+     * (Highcharts, Highmaps) Whether to display this particular series or
+     * series type in the legend. Standalone series are shown in legend by
+     * default, and linked series are not. Since v7.2.0 it is possible to show
+     * series that use colorAxis by setting this option to `true`.
+     */
+    showInLegend?: boolean;
+    /**
+     * (Highcharts, Highmaps) Deprecated. Use
+     * series.accessibility.keyboardNavigation instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
+     */
+    skipKeyboardNavigation?: boolean;
+    /**
+     * (Highcharts, Highmaps) Whether to use gradually transitioning color
+     * gradients between contour levels. When disabled, each contour level is
+     * filled with a single flat color.
+     */
+    smoothColoring?: boolean;
+    /**
+     * (Highcharts, Highmaps) Sonification/audio chart options for a series.
+     */
+    sonification?: SeriesSonificationOptions;
+    /**
+     * (Highcharts, Highmaps) A collection of options for different series
+     * states.
+     */
+    states?: SeriesStatesOptionsObject;
+    /**
+     * (Highcharts, Highstock, Highmaps) Sticky tracking of mouse events. When
+     * true, the `mouseOut` event on a series isn't triggered until the mouse
+     * moves over another series, or out of the plot area. When false, the
+     * `mouseOut` event on a series is triggered when the mouse leaves the area
+     * around the series' graph or markers. This also implies the tooltip. When
+     * `stickyTracking` is false and `tooltip.shared` is false, the tooltip will
+     * be hidden when moving the mouse between series.
+     */
+    stickyTracking?: boolean;
+    /**
+     * (Highcharts, Highstock, Highmaps) A configuration object for the tooltip
+     * rendering of each single series. Properties are inherited from tooltip.
+     * Overridable properties are `headerFormat`, `pointFormat`, `yDecimals`,
+     * `xDateFormat`, `yPrefix` and `ySuffix`. Unlike other series, in a scatter
+     * plot the series.name by default shows in the headerFormat and point.x and
+     * point.y in the pointFormat.
+     */
+    tooltip?: SeriesTooltipOptionsObject;
+    /**
+     * (Highcharts, Highstock, Gantt) When a series contains a `data` array that
+     * is longer than this, the Series class looks for data configurations of
+     * plain numbers or arrays of numbers. The first and last valid points are
+     * checked. If found, the rest of the data is assumed to be the same. This
+     * saves expensive data checking and indexing in long series, and makes
+     * data-heavy charts render faster.
+     *
+     * Set it to `0` disable.
+     *
+     * Note:
+     *
+     * - In boost mode turbo threshold is forced. Only array of numbers or two
+     * dimensional arrays are allowed.
+     *
+     * - In version 11.4.3 and earlier, if object configurations were passed
+     * beyond the turbo threshold, a warning was logged in the console and the
+     * data series didn't render.
+     */
+    turboThreshold?: number;
+    /**
+     * (Highcharts, Highmaps) Set the initial visibility of the series.
+     */
+    visible?: boolean;
+    /**
+     * (Highmaps) Define the z index of the series.
+     */
+    zIndex?: number;
+    /**
+     * (Highcharts, Highstock) Defines the Axis on which the zones are applied.
+     */
+    zoneAxis?: string;
+    /**
+     * (Highcharts, Highstock) An array defining zones within a series. Zones
+     * can be applied to the X axis, Y axis or Z axis for bubbles, according to
+     * the `zoneAxis` option. The zone definitions have to be in ascending order
+     * regarding to the value.
+     *
+     * In styled mode, the color zones are styled with the
+     * `.highcharts-zone-{n}` class, or custom classed from the `className`
+     * option (view live demo).
+     */
+    zones?: Array<SeriesZonesOptionsObject>;
+    /**
+     * (Highcharts, Highmaps) Whether to zoom non-cartesian series. If
+     * `chart.zooming` is set, the option allows to disable zooming on an
+     * individual non-cartesian series. By default zooming is enabled for all
+     * series.
+     *
+     * **Note**: This option works only for non-cartesian series.
+     */
+    zoomEnabled?: boolean;
+}
+/**
+ * (Highcharts, Highmaps) Animation when not hovering over the marker.
+ */
+export interface PlotContourStatesInactiveAnimationOptions {
+    duration?: number;
+}
+/**
+ * (Highcharts, Highstock, Highmaps) Positioning options for fixed tooltip,
+ * taking effect only when tooltip.fixed is `true`.
+ */
+export interface PlotContourTooltipPositionOptions {
+    /**
+     * (Highcharts, Highstock, Highmaps) The horizontal alignment of the fixed
+     * tooltip.
+     */
+    align?: AlignValue;
+    /**
+     * (Highcharts, Highstock, Highmaps) What the fixed tooltip alignment should
+     * be relative to.
+     *
+     * The default, `pane`, means that it is aligned within the plot area for
+     * that given series. If the tooltip is split (as default in Stock charts),
+     * each partial tooltip is aligned within the series' pane.
+     */
+    relativeTo?: OptionsRelativeToValue;
+    /**
+     * (Highcharts, Highstock, Highmaps) The vertical alignment of the fixed
+     * tooltip.
+     */
+    verticalAlign?: VerticalAlignValue;
+    /**
+     * (Highcharts, Highstock, Highmaps) X pixel offset from the given position.
+     * Can be used to shy away from axis lines, grid lines etc to avoid the
+     * tooltip overlapping other elements.
+     */
+    x?: number;
+    /**
+     * (Highcharts, Highstock, Highmaps) Y pixel offset from the given position.
+     * Can be used to shy away from axis lines, grid lines etc to avoid the
+     * tooltip overlapping other elements.
      */
     y?: number;
 }
@@ -113810,14 +116594,6 @@ export interface PlotDemaDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -114414,14 +117190,6 @@ export interface PlotDisparityindexDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -114896,8 +117664,13 @@ export interface PlotDmiOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotDmiDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -115080,13 +117853,21 @@ export interface PlotDmiOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -115131,8 +117912,13 @@ export interface PlotDmiOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -115228,7 +118014,7 @@ export interface PlotDmiOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -115593,14 +118379,6 @@ export interface PlotDpoDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -116044,8 +118822,13 @@ export interface PlotDumbbellOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotDumbbellDataSortingOptions);
     /**
-     * (Highcharts, Highstock) A description of the series to add to the screen
-     * reader information about the series.
+     * (Highcharts, Highstock) Deprecated. Use
+     * plotOptions.series.accessibility.description instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -116270,14 +119053,21 @@ export interface PlotDumbbellOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts, Highstock) Same as accessibility.point.descriptionFormat,
-     * but for an individual series. Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormat instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts, Highstock) Same as
-     * accessibility.series.descriptionFormatter, but for an individual series.
-     * Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -116401,8 +119191,13 @@ export interface PlotDumbbellOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highcharts, Highstock) If set to `true`, the accessibility module will
-     * skip past the points in this series for keyboard navigation.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.keyboardNavigation instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -116494,7 +119289,7 @@ export interface PlotDumbbellOptions {
      * individual non-cartesian series. By default zooming is enabled for all
      * series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -116876,8 +119671,13 @@ export interface PlotEmaOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotEmaDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -117052,13 +119852,21 @@ export interface PlotEmaOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -117103,8 +119911,13 @@ export interface PlotEmaOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -117200,7 +120013,7 @@ export interface PlotEmaOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -117556,14 +120369,6 @@ export interface PlotErrorbarDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -117803,8 +120608,13 @@ export interface PlotErrorbarOptions {
      */
     depth?: number;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -117992,13 +120802,21 @@ export interface PlotErrorbarOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -118138,8 +120956,13 @@ export interface PlotErrorbarOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -118283,7 +121106,7 @@ export interface PlotErrorbarOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -118615,14 +121438,6 @@ export interface PlotFlagsDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -118898,8 +121713,13 @@ export interface PlotFlagsOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotFlagsDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -119103,13 +121923,21 @@ export interface PlotFlagsOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -119247,8 +122075,13 @@ export interface PlotFlagsOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -119365,7 +122198,7 @@ export interface PlotFlagsOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -119563,8 +122396,13 @@ export interface PlotFlowmapOptions {
      */
     custom?: Dictionary<any>;
     /**
-     * (Highmaps) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highmaps) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -119666,13 +122504,21 @@ export interface PlotFlowmapOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highmaps) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highmaps) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -119689,8 +122535,13 @@ export interface PlotFlowmapOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highmaps) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highmaps) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -119744,7 +122595,7 @@ export interface PlotFlowmapOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -120060,8 +122911,13 @@ export interface PlotFunnel3dOptions {
      */
     depth?: number;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -120253,13 +123109,21 @@ export interface PlotFunnel3dOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -120404,8 +123268,13 @@ export interface PlotFunnel3dOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -120513,7 +123382,7 @@ export interface PlotFunnel3dOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -120776,8 +123645,13 @@ export interface PlotFunnelOptions {
      */
     depth?: number;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -120899,13 +123773,21 @@ export interface PlotFunnelOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -120954,8 +123836,13 @@ export interface PlotFunnelOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -121011,7 +123898,7 @@ export interface PlotFunnelOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -121669,14 +124556,6 @@ export interface PlotGeoheatmapDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highmaps) A `geoheatmap` series is a variety of heatmap series, composed
@@ -121874,8 +124753,13 @@ export interface PlotGeoheatmapOptions {
      */
     dataLabels?: (PlotGeoheatmapDataLabelsOptions|Array<PlotGeoheatmapDataLabelsOptions>);
     /**
-     * (Highmaps) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highmaps) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -121940,13 +124824,21 @@ export interface PlotGeoheatmapOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highmaps) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highmaps) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -121974,8 +124866,13 @@ export interface PlotGeoheatmapOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highmaps) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highmaps) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -122009,7 +124906,7 @@ export interface PlotGeoheatmapOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -122301,8 +125198,13 @@ export interface PlotHeatmapOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotHeatmapDataSortingOptions);
     /**
-     * (Highcharts, Highmaps) A description of the series to add to the screen
-     * reader information about the series.
+     * (Highcharts, Highmaps) Deprecated. Use
+     * plotOptions.series.accessibility.description instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -122438,13 +125340,21 @@ export interface PlotHeatmapOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts, Highmaps) Same as accessibility.point.descriptionFormat, but
-     * for an individual series. Overrides the chart wide configuration.
+     * (Highcharts, Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormat instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts, Highmaps) Same as accessibility.series.descriptionFormatter,
-     * but for an individual series. Overrides the chart wide configuration.
+     * (Highcharts, Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -122487,8 +125397,13 @@ export interface PlotHeatmapOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts, Highmaps) If set to `true`, the accessibility module will
-     * skip past the points in this series for keyboard navigation.
+     * (Highcharts, Highmaps) Deprecated. Use
+     * series.accessibility.keyboardNavigation instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -122568,7 +125483,7 @@ export interface PlotHeatmapOptions {
      * individual non-cartesian series. By default zooming is enabled for all
      * series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -123055,14 +125970,6 @@ export interface PlotHistogramDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -123346,8 +126253,13 @@ export interface PlotHistogramOptions {
      */
     depth?: number;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -123508,13 +126420,21 @@ export interface PlotHistogramOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -123625,8 +126545,13 @@ export interface PlotHistogramOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -123717,7 +126642,7 @@ export interface PlotHistogramOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -124201,14 +127126,6 @@ export interface PlotHollowcandlestickDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -124513,8 +127430,13 @@ export interface PlotHollowcandlestickOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotHollowcandlestickDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -124699,13 +127621,21 @@ export interface PlotHollowcandlestickOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -124856,8 +127786,13 @@ export interface PlotHollowcandlestickOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -124958,7 +127893,7 @@ export interface PlotHollowcandlestickOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -125344,8 +128279,13 @@ export interface PlotIkhOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotIkhDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -125524,13 +128464,21 @@ export interface PlotIkhOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -125587,8 +128535,13 @@ export interface PlotIkhOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -125688,7 +128641,7 @@ export interface PlotIkhOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -126200,14 +129153,6 @@ export interface PlotKeltnerchannelsDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -126673,8 +129618,13 @@ export interface PlotKlingerOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotKlingerDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -126849,13 +129799,21 @@ export interface PlotKlingerOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -126901,8 +129859,13 @@ export interface PlotKlingerOptions {
     showInLegend?: boolean;
     signalLine?: PlotKlingerSignalLineOptions;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -126998,7 +129961,7 @@ export interface PlotKlingerOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -127435,14 +130398,6 @@ export interface PlotLinearregressionangleDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -127833,14 +130788,6 @@ export interface PlotLinearregressionDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highstock) Point accessibility options for a series.
@@ -128170,14 +131117,6 @@ export interface PlotLinearregressioninterceptDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -128613,8 +131552,13 @@ export interface PlotLinearregressionOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotLinearregressionDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -128789,13 +131733,21 @@ export interface PlotLinearregressionOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -128840,8 +131792,13 @@ export interface PlotLinearregressionOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -128937,7 +131894,7 @@ export interface PlotLinearregressionOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -129269,14 +132226,6 @@ export interface PlotLinearregressionslopeDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -129707,14 +132656,6 @@ export interface PlotLineDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -130302,14 +133243,6 @@ export interface PlotMacdDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -130784,14 +133717,6 @@ export interface PlotMapbubbleDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highmaps) Options for the connector in the _Series on point_ feature.
@@ -131194,14 +134119,6 @@ export interface PlotMaplineDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highmaps) Options for the _Series on point_ feature. Only `pie` and
@@ -131428,8 +134345,13 @@ export interface PlotMaplineOptions {
      */
     dataLabels?: (PlotMaplineDataLabelsOptions|Array<PlotMaplineDataLabelsOptions>);
     /**
-     * (Highmaps) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highmaps) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -131537,13 +134459,21 @@ export interface PlotMaplineOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highmaps) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highmaps) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -131566,8 +134496,13 @@ export interface PlotMaplineOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highmaps) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highmaps) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -131610,7 +134545,7 @@ export interface PlotMaplineOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -131875,8 +134810,13 @@ export interface PlotMapOptions {
      */
     dataLabels?: (PlotMapDataLabelsOptions|Array<PlotMapDataLabelsOptions>);
     /**
-     * (Highmaps) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highmaps) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -131976,13 +134916,21 @@ export interface PlotMapOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highmaps) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highmaps) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highmaps) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -132005,8 +134953,13 @@ export interface PlotMapOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highmaps) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highmaps) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -132049,7 +135002,7 @@ export interface PlotMapOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -132428,14 +135381,6 @@ export interface PlotMappointDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highmaps) Options for the connector in the _Series on point_ feature.
@@ -132825,14 +135770,6 @@ export interface PlotMfiDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -133288,8 +136225,13 @@ export interface PlotMomentumOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotMomentumDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -133464,13 +136406,21 @@ export interface PlotMomentumOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -133515,8 +136465,13 @@ export interface PlotMomentumOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -133612,7 +136567,7 @@ export interface PlotMomentumOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -133968,14 +136923,6 @@ export interface PlotNatrDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -134369,8 +137316,13 @@ export interface PlotNetworkgraphOptions {
      */
     dataLabels?: (SeriesNetworkgraphDataLabelsOptionsObject|Array<SeriesNetworkgraphDataLabelsOptionsObject>);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -134492,13 +137444,21 @@ export interface PlotNetworkgraphOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -134543,8 +137503,13 @@ export interface PlotNetworkgraphOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -134615,7 +137580,7 @@ export interface PlotNetworkgraphOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -134998,8 +137963,13 @@ export interface PlotObvOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotObvDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -135174,13 +138144,21 @@ export interface PlotObvOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -135225,8 +138203,13 @@ export interface PlotObvOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -135322,7 +138305,7 @@ export interface PlotObvOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -135678,14 +138661,6 @@ export interface PlotOhlcDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -135998,8 +138973,13 @@ export interface PlotOhlcOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotOhlcDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -136175,13 +139155,21 @@ export interface PlotOhlcOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -136332,8 +139320,13 @@ export interface PlotOhlcOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -136422,7 +139415,7 @@ export interface PlotOhlcOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -137157,6 +140150,31 @@ export interface PlotOptions {
      * documentation for example)
      */
     columnrange?: PlotColumnrangeOptions;
+    /**
+     * (Highcharts, Highmaps) A contour plot is a graphical representation of
+     * three-dimensional data
+     *
+     * Configuration options for the series are given in three levels:
+     *
+     * 1. Options for all series in a chart are defined in the
+     * plotOptions.series object.
+     *
+     * 2. Options for all `contour` series are defined in plotOptions.contour.
+     *
+     * 3. Options for one single series are given in the series instance array.
+     * (see online documentation for example)
+     *
+     * **TypeScript:**
+     *
+     * - type option should always be set, otherwise a broad set of unsupported
+     * options is allowed.
+     *
+     * - when accessing an array of series, the combined set of all series types
+     * is represented by Highcharts.SeriesOptionsType . Narrowing down to the
+     * specific type can be done by checking the `type` property. (see online
+     * documentation for example)
+     */
+    contour?: PlotContourOptions;
     /**
      * (Highcharts) A cylinder graph is a variation of a 3d column graph. The
      * cylinder graph features cylindrical points.
@@ -140131,8 +143149,13 @@ export interface PlotPackedbubbleOptions {
      */
     dataLabels?: (SeriesPackedBubbleDataLabelsOptionsObject|Array<SeriesPackedBubbleDataLabelsOptionsObject>);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -140298,13 +143321,21 @@ export interface PlotPackedbubbleOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -140387,8 +143418,13 @@ export interface PlotPackedbubbleOptions {
      */
     sizeBy?: string;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -140480,6 +143516,16 @@ export interface PlotPackedbubbleOptions {
      */
     visible?: boolean;
     /**
+     * (Highcharts) The minimum for the Z value range. Defaults to the highest Z
+     * value in the data.
+     */
+    zMax?: number;
+    /**
+     * (Highcharts) The minimum for the Z value range. Defaults to the lowest Z
+     * value in the data.
+     */
+    zMin?: number;
+    /**
      * (Highcharts, Highstock) Defines the Axis on which the zones are applied.
      */
     zoneAxis?: string;
@@ -140499,7 +143545,7 @@ export interface PlotPackedbubbleOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
     /**
@@ -140861,14 +143907,6 @@ export interface PlotParetoDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -141289,14 +144327,6 @@ export interface PlotPcDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -141945,14 +144975,6 @@ export interface PlotPivotpointsDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -142325,14 +145347,6 @@ export interface PlotPointandfigureDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock) Apply a jitter effect for the rendered markers. When
@@ -142770,14 +145784,6 @@ export interface PlotPolygonDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -143189,14 +146195,6 @@ export interface PlotPpoDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -143664,8 +146662,13 @@ export interface PlotPriceenvelopesOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotPriceenvelopesDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -143840,13 +146843,21 @@ export interface PlotPriceenvelopesOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -143891,8 +146902,13 @@ export interface PlotPriceenvelopesOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -143992,7 +147008,7 @@ export interface PlotPriceenvelopesOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -144354,14 +147370,6 @@ export interface PlotPsarDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -144763,8 +147771,13 @@ export interface PlotPyramid3dOptions {
      */
     depth?: number;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -144940,13 +147953,21 @@ export interface PlotPyramid3dOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -145091,8 +148112,13 @@ export interface PlotPyramid3dOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -145200,7 +148226,7 @@ export interface PlotPyramid3dOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -145462,8 +148488,13 @@ export interface PlotPyramidOptions {
      */
     depth?: number;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -145585,13 +148616,21 @@ export interface PlotPyramidOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -145640,8 +148679,13 @@ export interface PlotPyramidOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -145697,7 +148741,7 @@ export interface PlotPyramidOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -146004,14 +149048,6 @@ export interface PlotRenkoDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highstock) Options for the corresponding navigator series if
@@ -146253,8 +149289,13 @@ export interface PlotRenkoOptions {
      */
     dataLabels?: (PlotRenkoDataLabelsOptions|Array<PlotRenkoDataLabelsOptions>);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     downColor?: string;
@@ -146401,13 +149442,21 @@ export interface PlotRenkoOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -146487,8 +149536,13 @@ export interface PlotRenkoOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -146573,7 +149627,7 @@ export interface PlotRenkoOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -146962,8 +150016,13 @@ export interface PlotRocOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotRocDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -147138,13 +150197,21 @@ export interface PlotRocOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -147189,8 +150256,13 @@ export interface PlotRocOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -147286,7 +150358,7 @@ export interface PlotRocOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -147642,14 +150714,6 @@ export interface PlotRsiDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -148025,8 +151089,13 @@ export interface PlotSankeyOptions {
      */
     dataLabels?: (SeriesSankeyDataLabelsOptionsObject|Array<SeriesSankeyDataLabelsOptionsObject>);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -148191,13 +151260,21 @@ export interface PlotSankeyOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -148231,8 +151308,13 @@ export interface PlotSankeyOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -148292,7 +151374,7 @@ export interface PlotSankeyOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -149056,14 +152138,6 @@ export interface PlotSeriesDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -149516,8 +152590,13 @@ export interface PlotSlowstochasticOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotSlowstochasticDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -149692,13 +152771,21 @@ export interface PlotSlowstochasticOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -149743,8 +152830,13 @@ export interface PlotSlowstochasticOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -149844,7 +152936,7 @@ export interface PlotSlowstochasticOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -150209,14 +153301,6 @@ export interface PlotSmaDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -150516,8 +153600,13 @@ export interface PlotSolidgaugeOptions {
      */
     dataLabels?: (PlotSolidgaugeDataLabelsOptions|Array<PlotSolidgaugeDataLabelsOptions>);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -150635,13 +153724,21 @@ export interface PlotSolidgaugeOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -150729,8 +153826,13 @@ export interface PlotSolidgaugeOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -150770,7 +153872,7 @@ export interface PlotSolidgaugeOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -151103,14 +154205,6 @@ export interface PlotSplineDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -151522,14 +154616,6 @@ export interface PlotStochasticDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -151984,8 +155070,13 @@ export interface PlotStreamgraphOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotStreamgraphDataSortingOptions);
     /**
-     * (Highcharts, Highstock) A description of the series to add to the screen
-     * reader information about the series.
+     * (Highcharts, Highstock) Deprecated. Use
+     * plotOptions.series.accessibility.description instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -152218,14 +155309,21 @@ export interface PlotStreamgraphOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts, Highstock) Same as accessibility.point.descriptionFormat,
-     * but for an individual series. Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormat instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts, Highstock) Same as
-     * accessibility.series.descriptionFormatter, but for an individual series.
-     * Overrides the chart wide configuration.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -152353,8 +155451,13 @@ export interface PlotStreamgraphOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highcharts, Highstock) If set to `true`, the accessibility module will
-     * skip past the points in this series for keyboard navigation.
+     * (Highcharts, Highstock) Deprecated. Use
+     * series.accessibility.keyboardNavigation instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -152472,7 +155575,7 @@ export interface PlotStreamgraphOptions {
      * individual non-cartesian series. By default zooming is enabled for all
      * series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -153030,14 +156133,6 @@ export interface PlotSupertrendDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -153475,8 +156570,13 @@ export interface PlotTemaOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotTemaDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -153651,13 +156751,21 @@ export interface PlotTemaOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -153702,8 +156810,13 @@ export interface PlotTemaOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -153799,7 +156912,7 @@ export interface PlotTemaOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -154259,14 +157372,6 @@ export interface PlotTilemapDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highmaps) Options for the connector in the _Series on point_
@@ -154573,8 +157678,13 @@ export interface PlotTimelineOptions {
      */
     dataLabels?: (TimelineDataLabelsOptionsObject|Array<TimelineDataLabelsOptionsObject>);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -154700,13 +157810,21 @@ export interface PlotTimelineOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -154751,8 +157869,13 @@ export interface PlotTimelineOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -154792,7 +157915,7 @@ export interface PlotTimelineOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -155227,8 +158350,13 @@ export interface PlotTreegraphOptions {
      */
     dataLabels?: (SeriesTreegraphDataLabelsOptionsObject|Array<SeriesTreegraphDataLabelsOptionsObject>);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -155399,13 +158527,21 @@ export interface PlotTreegraphOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -155485,8 +158621,13 @@ export interface PlotTreegraphOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -155580,7 +158721,7 @@ export interface PlotTreegraphOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -155994,14 +159135,6 @@ export interface PlotTreemapLevelsDataLabelsOptions {
      * pixels.
      */
     y?: number;
-    /**
-     * (Highcharts) The z index of the data labels group. Does not apply below
-     * series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) Set options on specific levels. Takes precedence over series
@@ -156320,8 +159453,13 @@ export interface PlotTreemapOptions {
      */
     dataLabels?: (PlotTreemapDataLabelsOptions|Array<PlotTreemapDataLabelsOptions>);
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -156496,13 +159634,21 @@ export interface PlotTreemapOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -156577,8 +159723,13 @@ export interface PlotTreemapOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -156697,7 +159848,7 @@ export interface PlotTreemapOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -157082,8 +160233,13 @@ export interface PlotTrendlineOptions {
      */
     dataSorting?: (DataSortingOptionsObject|PlotTrendlineDataSortingOptions);
     /**
-     * (Highstock) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highstock) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -157258,13 +160414,21 @@ export interface PlotTrendlineOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highstock) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highstock) Same as accessibility.series.descriptionFormatter, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highstock) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -157309,8 +160473,13 @@ export interface PlotTrendlineOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highstock) If set to `true`, the accessibility module will skip past the
-     * points in this series for keyboard navigation.
+     * (Highstock) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -157406,7 +160575,7 @@ export interface PlotTrendlineOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -157762,14 +160931,6 @@ export interface PlotTrixDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -158128,8 +161289,13 @@ export interface PlotVariablepieOptions {
      */
     depth?: number;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -158253,13 +161419,21 @@ export interface PlotVariablepieOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -158320,8 +161494,13 @@ export interface PlotVariablepieOptions {
      */
     sizeBy?: VariablePieSizeByValue;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -158384,7 +161563,7 @@ export interface PlotVariablepieOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -158868,14 +162047,6 @@ export interface PlotVbpDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -159829,14 +163000,6 @@ export interface PlotVwapDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -160392,14 +163555,6 @@ export interface PlotWilliamsrDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -160949,14 +164104,6 @@ export interface PlotWmaDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -161280,8 +164427,13 @@ export interface PlotWordcloudOptions {
      */
     dashStyle?: DashStyleValue;
     /**
-     * (Highcharts) A description of the series to add to the screen reader
-     * information about the series.
+     * (Highcharts) Deprecated. Use plotOptions.series.accessibility.description
+     * instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -161402,13 +164554,21 @@ export interface PlotWordcloudOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts) Same as accessibility.point.descriptionFormat, but for an
-     * individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use series.accessibility.point.descriptionFormat
+     * instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts) Same as accessibility.series.descriptionFormatter, but for
-     * an individual series. Overrides the chart wide configuration.
+     * (Highcharts) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -161440,8 +164600,13 @@ export interface PlotWordcloudOptions {
      */
     showInLegend?: boolean;
     /**
-     * (Highcharts) If set to `true`, the accessibility module will skip past
-     * the points in this series for keyboard navigation.
+     * (Highcharts) Deprecated. Use series.accessibility.keyboardNavigation
+     * instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -161512,7 +164677,7 @@ export interface PlotWordcloudOptions {
      * set, the option allows to disable zooming on an individual non-cartesian
      * series. By default zooming is enabled for all series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -161870,14 +165035,6 @@ export interface PlotXrangeDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -162183,8 +165340,13 @@ export interface PlotXrangeOptions {
      */
     dataLabels?: (PlotXrangeDataLabelsOptions|Array<PlotXrangeDataLabelsOptions>);
     /**
-     * (Highcharts, Highstock, Gantt) A description of the series to add to the
-     * screen reader information about the series.
+     * (Highcharts, Highstock, Gantt) Deprecated. Use
+     * plotOptions.series.accessibility.description instead.
+     *
+     * A description of the series to add to the screen reader information about
+     * the series.
+     *
+     * @deprecated 8.0.0
      */
     description?: string;
     /**
@@ -162341,15 +165503,21 @@ export interface PlotXrangeOptions {
      */
     point?: PlotSeriesPointOptions;
     /**
-     * (Highcharts, Highstock, Gantt) Same as
-     * accessibility.point.descriptionFormat, but for an individual series.
-     * Overrides the chart wide configuration.
+     * (Highcharts, Highstock, Gantt) Deprecated. Use
+     * series.accessibility.point.descriptionFormat instead.
+     *
+     * Same as accessibility.point.descriptionFormat, but for an individual
+     * series. Overrides the chart wide configuration.
      */
     pointDescriptionFormat?: Function;
     /**
-     * (Highcharts, Highstock, Gantt) Same as
-     * accessibility.series.descriptionFormatter, but for an individual series.
-     * Overrides the chart wide configuration.
+     * (Highcharts, Highstock, Gantt) Deprecated. Use
+     * series.accessibility.point.descriptionFormatter instead.
+     *
+     * Same as accessibility.series.descriptionFormatter, but for an individual
+     * series. Overrides the chart wide configuration.
+     *
+     * @deprecated 8.0.0
      */
     pointDescriptionFormatter?: Function;
     /**
@@ -162413,8 +165581,13 @@ export interface PlotXrangeOptions {
      */
     showInNavigator?: boolean;
     /**
-     * (Highcharts, Highstock, Gantt) If set to `true`, the accessibility module
-     * will skip past the points in this series for keyboard navigation.
+     * (Highcharts, Highstock, Gantt) Deprecated. Use
+     * series.accessibility.keyboardNavigation instead.
+     *
+     * If set to `true`, the accessibility module will skip past the points in
+     * this series for keyboard navigation.
+     *
+     * @deprecated 8.0.0
      */
     skipKeyboardNavigation?: boolean;
     /**
@@ -162493,7 +165666,7 @@ export interface PlotXrangeOptions {
      * individual non-cartesian series. By default zooming is enabled for all
      * series.
      *
-     * Note: This option works only for non-cartesian series.
+     * **Note**: This option works only for non-cartesian series.
      */
     zoomEnabled?: boolean;
 }
@@ -162849,14 +166022,6 @@ export interface PlotZigzagDataLabelsOptions {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Styles for the series label. The color
@@ -163705,27 +166870,28 @@ PlotArcdiagramMarkerStatesHoverAnimationOptions|PlotAreaMarkerStatesHoverAnimati
 PlotAreasplineMarkerStatesHoverAnimationOptions|PlotAreasplinerangeLowMarkerStatesHoverAnimationOptions|PlotAreasplinerangeMarkerStatesHoverAnimationOptions|PlotAroonMarkerStatesHoverAnimationOptions|
 PlotAroonoscillatorMarkerStatesHoverAnimationOptions|PlotAtrMarkerStatesHoverAnimationOptions|PlotBbMarkerStatesHoverAnimationOptions|PlotBellcurveMarkerStatesHoverAnimationOptions|
 PlotBubbleMarkerStatesHoverAnimationOptions|PlotCciMarkerStatesHoverAnimationOptions|PlotChaikinMarkerStatesHoverAnimationOptions|PlotCmfMarkerStatesHoverAnimationOptions|
-PlotCmoMarkerStatesHoverAnimationOptions|PlotDemaMarkerStatesHoverAnimationOptions|PlotDisparityindexMarkerStatesHoverAnimationOptions|PlotDmiMarkerStatesHoverAnimationOptions|
-PlotDpoMarkerStatesHoverAnimationOptions|PlotDumbbellLowMarkerStatesHoverAnimationOptions|PlotDumbbellMarkerStatesHoverAnimationOptions|PlotEmaMarkerStatesHoverAnimationOptions|
-PlotHeatmapMarkerStatesHoverAnimationOptions|PlotIkhMarkerStatesHoverAnimationOptions|PlotItemMarkerStatesHoverAnimationOptions|PlotKeltnerchannelsMarkerStatesHoverAnimationOptions|
-PlotKlingerMarkerStatesHoverAnimationOptions|PlotLinearregressionangleMarkerStatesHoverAnimationOptions|PlotLinearregressioninterceptMarkerStatesHoverAnimationOptions|
-PlotLinearregressionMarkerStatesHoverAnimationOptions|PlotLinearregressionslopeMarkerStatesHoverAnimationOptions|PlotLineMarkerStatesHoverAnimationOptions|
-PlotLollipopLowMarkerStatesHoverAnimationOptions|PlotLollipopMarkerStatesHoverAnimationOptions|PlotMacdMarkerStatesHoverAnimationOptions|PlotMapbubbleMarkerStatesHoverAnimationOptions|
-PlotMappointMarkerStatesHoverAnimationOptions|PlotMfiMarkerStatesHoverAnimationOptions|PlotMomentumMarkerStatesHoverAnimationOptions|PlotNatrMarkerStatesHoverAnimationOptions|
-PlotNetworkgraphMarkerStatesHoverAnimationOptions|PlotObvMarkerStatesHoverAnimationOptions|PlotPackedbubbleMarkerStatesHoverAnimationOptions|PlotParetoMarkerStatesHoverAnimationOptions|
-PlotPcMarkerStatesHoverAnimationOptions|PlotPivotpointsMarkerStatesHoverAnimationOptions|PlotPointandfigureMarkerStatesHoverAnimationOptions|PlotPointandfigureMarkerUpStatesHoverAnimationOptions|
-PlotPolygonMarkerStatesHoverAnimationOptions|PlotPpoMarkerStatesHoverAnimationOptions|PlotPriceenvelopesMarkerStatesHoverAnimationOptions|PlotPsarMarkerStatesHoverAnimationOptions|
-PlotRocMarkerStatesHoverAnimationOptions|PlotRsiMarkerStatesHoverAnimationOptions|PlotScatter3dMarkerStatesHoverAnimationOptions|PlotScatterMarkerStatesHoverAnimationOptions|
-PlotSeriesMarkerStatesHoverAnimationOptions|PlotSlowstochasticMarkerStatesHoverAnimationOptions|PlotSmaMarkerStatesHoverAnimationOptions|PlotSplineMarkerStatesHoverAnimationOptions|
-PlotStochasticMarkerStatesHoverAnimationOptions|PlotStreamgraphMarkerStatesHoverAnimationOptions|PlotSupertrendMarkerStatesHoverAnimationOptions|PlotTemaMarkerStatesHoverAnimationOptions|
-PlotTimelineMarkerStatesHoverAnimationOptions|PlotTreegraphMarkerStatesHoverAnimationOptions|PlotTrendlineMarkerStatesHoverAnimationOptions|PlotTrixMarkerStatesHoverAnimationOptions|
-PlotVbpMarkerStatesHoverAnimationOptions|PlotVwapMarkerStatesHoverAnimationOptions|PlotWilliamsrMarkerStatesHoverAnimationOptions|PlotWmaMarkerStatesHoverAnimationOptions|
-PlotZigzagMarkerStatesHoverAnimationOptions|SeriesAreaDataMarkerStatesHoverAnimationOptions|SeriesAreasplineDataMarkerStatesHoverAnimationOptions|SeriesBubbleDataMarkerStatesHoverAnimationOptions|
-SeriesHeatmapDataMarkerStatesHoverAnimationOptions|SeriesLineDataMarkerStatesHoverAnimationOptions|SeriesNetworkgraphNodesMarkerStatesHoverAnimationOptions|
-SeriesPointandfigureDataMarkerStatesHoverAnimationOptions|SeriesPolygonDataMarkerStatesHoverAnimationOptions|SeriesScatter3dDataMarkerStatesHoverAnimationOptions|
-SeriesScatterDataMarkerStatesHoverAnimationOptions|SeriesSplineDataMarkerStatesHoverAnimationOptions|SeriesStreamgraphDataMarkerStatesHoverAnimationOptions|
-SeriesSunburstDataMarkerStatesHoverAnimationOptions|SeriesTreegraphDataMarkerStatesHoverAnimationOptions|SeriesTreemapDataMarkerStatesHoverAnimationOptions|
-SeriesVectorDataMarkerStatesHoverAnimationOptions|SeriesWindbarbDataMarkerStatesHoverAnimationOptions|SeriesXrangeDataMarkerStatesHoverAnimationOptions|Partial<AnimationOptionsObject>);
+PlotCmoMarkerStatesHoverAnimationOptions|PlotContourMarkerStatesHoverAnimationOptions|PlotDemaMarkerStatesHoverAnimationOptions|PlotDisparityindexMarkerStatesHoverAnimationOptions|
+PlotDmiMarkerStatesHoverAnimationOptions|PlotDpoMarkerStatesHoverAnimationOptions|PlotDumbbellLowMarkerStatesHoverAnimationOptions|PlotDumbbellMarkerStatesHoverAnimationOptions|
+PlotEmaMarkerStatesHoverAnimationOptions|PlotHeatmapMarkerStatesHoverAnimationOptions|PlotIkhMarkerStatesHoverAnimationOptions|PlotItemMarkerStatesHoverAnimationOptions|
+PlotKeltnerchannelsMarkerStatesHoverAnimationOptions|PlotKlingerMarkerStatesHoverAnimationOptions|PlotLinearregressionangleMarkerStatesHoverAnimationOptions|
+PlotLinearregressioninterceptMarkerStatesHoverAnimationOptions|PlotLinearregressionMarkerStatesHoverAnimationOptions|PlotLinearregressionslopeMarkerStatesHoverAnimationOptions|
+PlotLineMarkerStatesHoverAnimationOptions|PlotLollipopLowMarkerStatesHoverAnimationOptions|PlotLollipopMarkerStatesHoverAnimationOptions|PlotMacdMarkerStatesHoverAnimationOptions|
+PlotMapbubbleMarkerStatesHoverAnimationOptions|PlotMappointMarkerStatesHoverAnimationOptions|PlotMfiMarkerStatesHoverAnimationOptions|PlotMomentumMarkerStatesHoverAnimationOptions|
+PlotNatrMarkerStatesHoverAnimationOptions|PlotNetworkgraphMarkerStatesHoverAnimationOptions|PlotObvMarkerStatesHoverAnimationOptions|PlotPackedbubbleMarkerStatesHoverAnimationOptions|
+PlotParetoMarkerStatesHoverAnimationOptions|PlotPcMarkerStatesHoverAnimationOptions|PlotPivotpointsMarkerStatesHoverAnimationOptions|PlotPointandfigureMarkerStatesHoverAnimationOptions|
+PlotPointandfigureMarkerUpStatesHoverAnimationOptions|PlotPolygonMarkerStatesHoverAnimationOptions|PlotPpoMarkerStatesHoverAnimationOptions|PlotPriceenvelopesMarkerStatesHoverAnimationOptions|
+PlotPsarMarkerStatesHoverAnimationOptions|PlotRocMarkerStatesHoverAnimationOptions|PlotRsiMarkerStatesHoverAnimationOptions|PlotScatter3dMarkerStatesHoverAnimationOptions|
+PlotScatterMarkerStatesHoverAnimationOptions|PlotSeriesMarkerStatesHoverAnimationOptions|PlotSlowstochasticMarkerStatesHoverAnimationOptions|PlotSmaMarkerStatesHoverAnimationOptions|
+PlotSplineMarkerStatesHoverAnimationOptions|PlotStochasticMarkerStatesHoverAnimationOptions|PlotStreamgraphMarkerStatesHoverAnimationOptions|PlotSupertrendMarkerStatesHoverAnimationOptions|
+PlotTemaMarkerStatesHoverAnimationOptions|PlotTimelineMarkerStatesHoverAnimationOptions|PlotTreegraphMarkerStatesHoverAnimationOptions|PlotTrendlineMarkerStatesHoverAnimationOptions|
+PlotTrixMarkerStatesHoverAnimationOptions|PlotVbpMarkerStatesHoverAnimationOptions|PlotVwapMarkerStatesHoverAnimationOptions|PlotWilliamsrMarkerStatesHoverAnimationOptions|
+PlotWmaMarkerStatesHoverAnimationOptions|PlotZigzagMarkerStatesHoverAnimationOptions|SeriesAreaDataMarkerStatesHoverAnimationOptions|SeriesAreasplineDataMarkerStatesHoverAnimationOptions|
+SeriesBubbleDataMarkerStatesHoverAnimationOptions|SeriesContourDataMarkerStatesHoverAnimationOptions|SeriesHeatmapDataMarkerStatesHoverAnimationOptions|SeriesLineDataMarkerStatesHoverAnimationOptions|
+SeriesNetworkgraphNodesMarkerStatesHoverAnimationOptions|SeriesPointandfigureDataMarkerStatesHoverAnimationOptions|SeriesPolygonDataMarkerStatesHoverAnimationOptions|
+SeriesScatter3dDataMarkerStatesHoverAnimationOptions|SeriesScatterDataMarkerStatesHoverAnimationOptions|SeriesSplineDataMarkerStatesHoverAnimationOptions|
+SeriesStreamgraphDataMarkerStatesHoverAnimationOptions|SeriesSunburstDataMarkerStatesHoverAnimationOptions|SeriesTreegraphDataMarkerStatesHoverAnimationOptions|
+SeriesTreemapDataMarkerStatesHoverAnimationOptions|SeriesVectorDataMarkerStatesHoverAnimationOptions|SeriesWindbarbDataMarkerStatesHoverAnimationOptions|
+SeriesXrangeDataMarkerStatesHoverAnimationOptions|Partial<AnimationOptionsObject>);
     /**
      * (Highcharts, Highstock) Enable or disable the point marker.
      */
@@ -163748,7 +166914,7 @@ SeriesVectorDataMarkerStatesHoverAnimationOptions|SeriesWindbarbDataMarkerStates
      * (Highcharts, Highstock) The color of the point marker's outline. When
      * `undefined`, the series' or point's lineColor for normal state is used.
      */
-    lineColor?: (ColorString|GradientColorObject|PatternObject);
+    lineColor?: (string|ColorString|GradientColorObject|PatternObject);
     /**
      * (Highcharts, Highstock) The width of the point marker's outline. When
      * `undefined`, the series' or point's lineWidth for normal state is used.
@@ -164411,6 +167577,7 @@ export interface ScrollbarOptions {
      * (Highstock, Gantt) Whether to redraw the main chart as the scrollbar or
      * the navigator zoomed window is moved. Defaults to `true` for modern
      * browsers and `false` for legacy IE browsers as well as mobile devices.
+     * This option works regardless of whether the scrollbar is enabled or not.
      */
     liveRedraw?: boolean;
     /**
@@ -164547,7 +167714,7 @@ PlotAreaAccessibilityPointOptions|PlotArearangeAccessibilityPointOptions|PlotAre
 PlotAroonoscillatorAccessibilityPointOptions|PlotAtrAccessibilityPointOptions|PlotBarAccessibilityPointOptions|PlotBbAccessibilityPointOptions|PlotBellcurveAccessibilityPointOptions|
 PlotBoxplotAccessibilityPointOptions|PlotBubbleAccessibilityPointOptions|PlotBulletAccessibilityPointOptions|PlotCandlestickAccessibilityPointOptions|PlotCciAccessibilityPointOptions|
 PlotChaikinAccessibilityPointOptions|PlotCmfAccessibilityPointOptions|PlotCmoAccessibilityPointOptions|PlotColumnAccessibilityPointOptions|PlotColumnpyramidAccessibilityPointOptions|
-PlotColumnrangeAccessibilityPointOptions|PlotCylinderAccessibilityPointOptions|PlotDemaAccessibilityPointOptions|PlotDependencywheelAccessibilityPointOptions|
+PlotColumnrangeAccessibilityPointOptions|PlotContourAccessibilityPointOptions|PlotCylinderAccessibilityPointOptions|PlotDemaAccessibilityPointOptions|PlotDependencywheelAccessibilityPointOptions|
 PlotDisparityindexAccessibilityPointOptions|PlotDmiAccessibilityPointOptions|PlotDpoAccessibilityPointOptions|PlotDumbbellAccessibilityPointOptions|PlotEmaAccessibilityPointOptions|
 PlotErrorbarAccessibilityPointOptions|PlotFlagsAccessibilityPointOptions|PlotFlowmapAccessibilityPointOptions|PlotFunnel3dAccessibilityPointOptions|PlotFunnelAccessibilityPointOptions|
 PlotGanttAccessibilityPointOptions|PlotGaugeAccessibilityPointOptions|PlotGeoheatmapAccessibilityPointOptions|PlotHeatmapAccessibilityPointOptions|PlotHeikinashiAccessibilityPointOptions|
@@ -164915,14 +168082,6 @@ export interface SeriesArcDiagramDataLabelsOptionsObject {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) An `arcdiagram` series. If the type option is not specified, it
@@ -165308,14 +168467,6 @@ PlotLollipopDataLabelsAnimationOptions|Partial<AnimationOptionsObject>);
      * point value.
      */
     yLow?: number;
-    /**
-     * (Highcharts, Highstock) The z index of the data labels group. Does not
-     * apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts, Highstock, Gantt) Enable or disable the initial animation when a
@@ -166242,31 +169393,38 @@ export interface SeriesConnectorsOptionsObject {
     type?: (string|PathfinderTypeValue);
 }
 /**
- * (Highcharts, Highstock) Animation setting for hovering the graph in line-type
- * series.
+ * (Highcharts, Highstock) Animation when hovering over the marker.
  */
-export interface SeriesCylinderDataStatesHoverAnimationOptions {
-    /**
-     * (Highcharts, Highstock) The duration of the hover animation in
-     * milliseconds. By default the hover state animates quickly in, and slowly
-     * back to normal.
-     */
+export interface SeriesContourDataMarkerStatesHoverAnimationOptions {
     duration?: number;
 }
 /**
- * (Highcharts, Highstock) Animation setting for hovering the graph in line-type
- * series.
+ * (Highcharts, Highstock, Gantt) Enable or disable the initial animation when a
+ * series is displayed for the `dataLabels`. The animation can also be set as a
+ * configuration object. Please note that this option only applies to the
+ * initial animation.
+ *
+ * For other animations, see chart.animation and the animation parameter under
+ * the API methods. The following properties are supported:
+ *
+ * - `defer`: The animation delay time in milliseconds.
  */
-export interface SeriesCylinderDataStatesSelectAnimationOptions {
+export interface SeriesCylinderDataDataLabelsAnimationOptions {
     /**
-     * (Highcharts, Highstock) The duration of the hover animation in
-     * milliseconds. By default the hover state animates quickly in, and slowly
-     * back to normal.
+     * (Highcharts, Highstock, Gantt) The animation delay time in milliseconds.
+     * Set to `0` to render the data labels immediately. As `undefined` inherits
+     * defer time from the series.animation.defer.
      */
+    defer?: number;
+}
+/**
+ * (Highcharts, Highstock) Animation when not hovering over the marker.
+ */
+export interface SeriesCylinderDataStatesInactiveAnimationOptions {
     duration?: number;
 }
 /**
- * (Highstock) A `DEMA` series. If the type option is not specified, it is
+ * (Highcharts) A `cylinder` series. If the type option is not specified, it is
  * inherited from chart.type.
  *
  * Configuration options for the series are given in three levels:
@@ -166274,7 +169432,7 @@ export interface SeriesCylinderDataStatesSelectAnimationOptions {
  * 1. Options for all series in a chart are defined in the plotOptions.series
  * object.
  *
- * 2. Options for all `dema` series are defined in plotOptions.dema.
+ * 2. Options for all `cylinder` series are defined in plotOptions.cylinder.
  *
  * 3. Options for one single series are given in the series instance array. (see
  * online documentation for example)
@@ -166289,92 +169447,71 @@ export interface SeriesCylinderDataStatesSelectAnimationOptions {
  * type can be done by checking the `type` property. (see online documentation
  * for example)
  *
- * You have to extend the `SeriesDemaOptions` via an interface to allow custom
- * properties: ``` declare interface SeriesDemaOptions { customProperty: string;
- * }
- *
- */
-export interface SeriesDemaOptions extends PlotDemaOptions, SeriesOptions {
-    /**
-     * Not available
-     */
-    dataParser?: undefined;
-    /**
-     * Not available
-     */
-    dataURL?: undefined;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) This property is only in
-     * TypeScript non-optional and might be `undefined` in series objects from
-     * unknown sources.
-     */
-    type: "dema";
-}
-/**
- * (Highcharts) A `dependencywheel` series. If the type option is not specified,
- * it is inherited from chart.type.
- *
- * Configuration options for the series are given in three levels:
- *
- * 1. Options for all series in a chart are defined in the plotOptions.series
- * object.
- *
- * 2. Options for all `dependencywheel` series are defined in
- * plotOptions.dependencywheel.
- *
- * 3. Options for one single series are given in the series instance array. (see
- * online documentation for example)
- *
- * **TypeScript:**
- *
- * - type option should always be set, otherwise a broad set of unsupported
- * options is allowed.
- *
- * - when accessing an array of series, the combined set of all series types is
- * represented by Highcharts.SeriesOptionsType . Narrowing down to the specific
- * type can be done by checking the `type` property. (see online documentation
- * for example)
- *
- * You have to extend the `SeriesDependencywheelOptions` via an interface to
- * allow custom properties: ``` declare interface SeriesDependencywheelOptions {
+ * You have to extend the `SeriesCylinderOptions` via an interface to allow
+ * custom properties: ``` declare interface SeriesCylinderOptions {
  * customProperty: string; }
  *
  */
-export interface SeriesDependencywheelOptions extends PlotDependencywheelOptions, SeriesOptions {
+export interface SeriesCylinderOptions extends PlotCylinderOptions, SeriesOptions {
     /**
-     * (Highcharts) An array of data points for the series. For the
-     * `dependencywheel` series type, points can be given in the following way:
+     * (Highcharts, Highstock) An array of data points for the series. For the
+     * `cylinder` series type, points can be given in the following ways:
      *
-     * An array of objects with named values. The following snippet shows only a
-     * few settings, see the complete options set below. If the total number of
-     * data points exceeds the series' turboThreshold, this option is not
-     * available. (see online documentation for example)
+     * 1. An array of numerical values. In this case, the numerical values will
+     * be interpreted as `y` options. The `x` values will be automatically
+     * calculated, either starting at 0 and incremented by 1, or from
+     * `pointStart` and `pointInterval` given in the series options. If the axis
+     * has categories, these will be used. Example: (see online documentation
+     * for example)
+     *
+     * 2. An array of arrays with 2 values. In this case, the values correspond
+     * to `x,y`. If the first value is a string, it is applied as the name of
+     * the point, and the `x` value is inferred. (see online documentation for
+     * example)
+     *
+     * 3. An array of objects with named values. The following snippet shows
+     * only a few settings, see the complete options set below. If the total
+     * number of data points exceeds the series' turboThreshold, this option is
+     * not available. (see online documentation for example)
      */
-    data?: Array<([string, string, number]|SeriesSankeyPointOptionsObject)>;
-    /**
-     * (Highcharts) A collection of options for the individual nodes. The nodes
-     * in a dependency diagram are auto-generated instances of
-     * `Highcharts.Point`, but options can be applied here and linked by the
-     * `id`.
-     */
-    nodes?: Array<SeriesSankeyNodesOptionsObject>;
+    data?: Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>;
     /**
      * (Highcharts, Highstock, Highmaps, Gantt) This property is only in
      * TypeScript non-optional and might be `undefined` in series objects from
      * unknown sources.
      */
-    type: "dependencywheel";
+    type: "cylinder";
 }
 /**
- * (Highstock) The Directional Movement Index (DMI) indicator series. If the
- * type option is not specified, it is inherited from chart.type.
+ * (Highcharts, Highstock, Highmaps, Gantt) Enable or disable the initial
+ * animation when a series is displayed for the `dataLabels`. The animation can
+ * also be set as a configuration object. Please note that this option only
+ * applies to the initial animation.
+ *
+ * For other animations, see chart.animation and the animation parameter under
+ * the API methods. The following properties are supported:
+ *
+ * - `defer`: The animation delay time in milliseconds.
+ */
+export interface SeriesDependencywheelNodesDataLabelsAnimationOptions {
+    /**
+     * (Highcharts, Highstock, Highmaps, Gantt) The animation delay time in
+     * milliseconds. Set to `0` to render the data labels immediately. As
+     * `undefined` inherits defer time from the series.animation.defer.
+     */
+    defer?: number;
+}
+/**
+ * (Highstock) The Disparity Index indicator series. If the type option is not
+ * specified, it is inherited from chart.type.
  *
  * Configuration options for the series are given in three levels:
  *
  * 1. Options for all series in a chart are defined in the plotOptions.series
  * object.
  *
- * 2. Options for all `dmi` series are defined in plotOptions.dmi.
+ * 2. Options for all `disparityindex` series are defined in
+ * plotOptions.disparityindex.
  *
  * 3. Options for one single series are given in the series instance array. (see
  * online documentation for example)
@@ -166389,12 +169526,12 @@ export interface SeriesDependencywheelOptions extends PlotDependencywheelOptions
  * type can be done by checking the `type` property. (see online documentation
  * for example)
  *
- * You have to extend the `SeriesDmiOptions` via an interface to allow custom
- * properties: ``` declare interface SeriesDmiOptions { customProperty: string;
- * }
+ * You have to extend the `SeriesDisparityindexOptions` via an interface to
+ * allow custom properties: ``` declare interface SeriesDisparityindexOptions {
+ * customProperty: string; }
  *
  */
-export interface SeriesDmiOptions extends PlotDmiOptions, SeriesOptions {
+export interface SeriesDisparityindexOptions extends PlotDisparityindexOptions, SeriesOptions {
     /**
      * Not available
      */
@@ -166408,7 +169545,52 @@ export interface SeriesDmiOptions extends PlotDmiOptions, SeriesOptions {
      * TypeScript non-optional and might be `undefined` in series objects from
      * unknown sources.
      */
-    type: "dmi";
+    type: "disparityindex";
+}
+/**
+ * (Highstock) A Detrended Price Oscillator. If the type option is not
+ * specified, it is inherited from chart.type.
+ *
+ * Configuration options for the series are given in three levels:
+ *
+ * 1. Options for all series in a chart are defined in the plotOptions.series
+ * object.
+ *
+ * 2. Options for all `dpo` series are defined in plotOptions.dpo.
+ *
+ * 3. Options for one single series are given in the series instance array. (see
+ * online documentation for example)
+ *
+ * **TypeScript:**
+ *
+ * - type option should always be set, otherwise a broad set of unsupported
+ * options is allowed.
+ *
+ * - when accessing an array of series, the combined set of all series types is
+ * represented by Highcharts.SeriesOptionsType . Narrowing down to the specific
+ * type can be done by checking the `type` property. (see online documentation
+ * for example)
+ *
+ * You have to extend the `SeriesDpoOptions` via an interface to allow custom
+ * properties: ``` declare interface SeriesDpoOptions { customProperty: string;
+ * }
+ *
+ */
+export interface SeriesDpoOptions extends PlotDpoOptions, SeriesOptions {
+    /**
+     * Not available
+     */
+    dataParser?: undefined;
+    /**
+     * Not available
+     */
+    dataURL?: undefined;
+    /**
+     * (Highcharts, Highstock, Highmaps, Gantt) This property is only in
+     * TypeScript non-optional and might be `undefined` in series objects from
+     * unknown sources.
+     */
+    type: "dpo";
 }
 /**
  * (Highcharts, Highstock, Gantt) The draggable-points module allows points to
@@ -167494,19 +170676,19 @@ export interface SeriesLabelOptionsObject {
 PlotArearangeLabelStyleOptions|PlotAreasplineLabelStyleOptions|PlotAreasplinerangeLabelStyleOptions|PlotAroonLabelStyleOptions|PlotAroonoscillatorLabelStyleOptions|PlotAtrLabelStyleOptions|
 PlotBarLabelStyleOptions|PlotBbLabelStyleOptions|PlotBellcurveLabelStyleOptions|PlotBoxplotLabelStyleOptions|PlotBubbleLabelStyleOptions|PlotBulletLabelStyleOptions|PlotCandlestickLabelStyleOptions|
 PlotCciLabelStyleOptions|PlotChaikinLabelStyleOptions|PlotCmfLabelStyleOptions|PlotCmoLabelStyleOptions|PlotColumnLabelStyleOptions|PlotColumnpyramidLabelStyleOptions|PlotColumnrangeLabelStyleOptions|
-PlotCylinderLabelStyleOptions|PlotDemaLabelStyleOptions|PlotDependencywheelLabelStyleOptions|PlotDisparityindexLabelStyleOptions|PlotDmiLabelStyleOptions|PlotDpoLabelStyleOptions|
-PlotDumbbellLabelStyleOptions|PlotEmaLabelStyleOptions|PlotErrorbarLabelStyleOptions|PlotFlagsLabelStyleOptions|PlotFunnel3dLabelStyleOptions|PlotGanttLabelStyleOptions|PlotGaugeLabelStyleOptions|
-PlotHeatmapLabelStyleOptions|PlotHeikinashiLabelStyleOptions|PlotHistogramLabelStyleOptions|PlotHlcLabelStyleOptions|PlotHollowcandlestickLabelStyleOptions|PlotIkhLabelStyleOptions|
-PlotKeltnerchannelsLabelStyleOptions|PlotKlingerLabelStyleOptions|PlotLinearregressionangleLabelStyleOptions|PlotLinearregressioninterceptLabelStyleOptions|PlotLinearregressionLabelStyleOptions|
-PlotLinearregressionslopeLabelStyleOptions|PlotLineLabelStyleOptions|PlotLollipopLabelStyleOptions|PlotMacdLabelStyleOptions|PlotMfiLabelStyleOptions|PlotMomentumLabelStyleOptions|
-PlotNatrLabelStyleOptions|PlotObvLabelStyleOptions|PlotOhlcLabelStyleOptions|PlotOrganizationLabelStyleOptions|PlotPackedbubbleLabelStyleOptions|PlotParetoLabelStyleOptions|PlotPcLabelStyleOptions|
-PlotPictorialLabelStyleOptions|PlotPivotpointsLabelStyleOptions|PlotPointandfigureLabelStyleOptions|PlotPolygonLabelStyleOptions|PlotPpoLabelStyleOptions|PlotPriceenvelopesLabelStyleOptions|
-PlotPsarLabelStyleOptions|PlotPyramid3dLabelStyleOptions|PlotRenkoLabelStyleOptions|PlotRocLabelStyleOptions|PlotRsiLabelStyleOptions|PlotSankeyLabelStyleOptions|PlotScatter3dLabelStyleOptions|
-PlotScatterLabelStyleOptions|PlotSeriesLabelStyleOptions|PlotSlowstochasticLabelStyleOptions|PlotSmaLabelStyleOptions|PlotSolidgaugeLabelStyleOptions|PlotSplineLabelStyleOptions|
-PlotStochasticLabelStyleOptions|PlotStreamgraphLabelStyleOptions|PlotSupertrendLabelStyleOptions|PlotTemaLabelStyleOptions|PlotTilemapLabelStyleOptions|PlotTimelineLabelStyleOptions|
-PlotTreegraphLabelStyleOptions|PlotTreemapLabelStyleOptions|PlotTrendlineLabelStyleOptions|PlotTrixLabelStyleOptions|PlotVariwideLabelStyleOptions|PlotVbpLabelStyleOptions|PlotVectorLabelStyleOptions|
-PlotVwapLabelStyleOptions|PlotWaterfallLabelStyleOptions|PlotWilliamsrLabelStyleOptions|PlotWindbarbLabelStyleOptions|PlotWmaLabelStyleOptions|PlotWordcloudLabelStyleOptions|
-PlotXrangeLabelStyleOptions|PlotZigzagLabelStyleOptions);
+PlotContourLabelStyleOptions|PlotCylinderLabelStyleOptions|PlotDemaLabelStyleOptions|PlotDependencywheelLabelStyleOptions|PlotDisparityindexLabelStyleOptions|PlotDmiLabelStyleOptions|
+PlotDpoLabelStyleOptions|PlotDumbbellLabelStyleOptions|PlotEmaLabelStyleOptions|PlotErrorbarLabelStyleOptions|PlotFlagsLabelStyleOptions|PlotFunnel3dLabelStyleOptions|PlotGanttLabelStyleOptions|
+PlotGaugeLabelStyleOptions|PlotHeatmapLabelStyleOptions|PlotHeikinashiLabelStyleOptions|PlotHistogramLabelStyleOptions|PlotHlcLabelStyleOptions|PlotHollowcandlestickLabelStyleOptions|
+PlotIkhLabelStyleOptions|PlotKeltnerchannelsLabelStyleOptions|PlotKlingerLabelStyleOptions|PlotLinearregressionangleLabelStyleOptions|PlotLinearregressioninterceptLabelStyleOptions|
+PlotLinearregressionLabelStyleOptions|PlotLinearregressionslopeLabelStyleOptions|PlotLineLabelStyleOptions|PlotLollipopLabelStyleOptions|PlotMacdLabelStyleOptions|PlotMfiLabelStyleOptions|
+PlotMomentumLabelStyleOptions|PlotNatrLabelStyleOptions|PlotObvLabelStyleOptions|PlotOhlcLabelStyleOptions|PlotOrganizationLabelStyleOptions|PlotPackedbubbleLabelStyleOptions|
+PlotParetoLabelStyleOptions|PlotPcLabelStyleOptions|PlotPictorialLabelStyleOptions|PlotPivotpointsLabelStyleOptions|PlotPointandfigureLabelStyleOptions|PlotPolygonLabelStyleOptions|
+PlotPpoLabelStyleOptions|PlotPriceenvelopesLabelStyleOptions|PlotPsarLabelStyleOptions|PlotPyramid3dLabelStyleOptions|PlotRenkoLabelStyleOptions|PlotRocLabelStyleOptions|PlotRsiLabelStyleOptions|
+PlotSankeyLabelStyleOptions|PlotScatter3dLabelStyleOptions|PlotScatterLabelStyleOptions|PlotSeriesLabelStyleOptions|PlotSlowstochasticLabelStyleOptions|PlotSmaLabelStyleOptions|
+PlotSolidgaugeLabelStyleOptions|PlotSplineLabelStyleOptions|PlotStochasticLabelStyleOptions|PlotStreamgraphLabelStyleOptions|PlotSupertrendLabelStyleOptions|PlotTemaLabelStyleOptions|
+PlotTilemapLabelStyleOptions|PlotTimelineLabelStyleOptions|PlotTreegraphLabelStyleOptions|PlotTreemapLabelStyleOptions|PlotTrendlineLabelStyleOptions|PlotTrixLabelStyleOptions|
+PlotVariwideLabelStyleOptions|PlotVbpLabelStyleOptions|PlotVectorLabelStyleOptions|PlotVwapLabelStyleOptions|PlotWaterfallLabelStyleOptions|PlotWilliamsrLabelStyleOptions|
+PlotWindbarbLabelStyleOptions|PlotWmaLabelStyleOptions|PlotWordcloudLabelStyleOptions|PlotXrangeLabelStyleOptions|PlotZigzagLabelStyleOptions);
     /**
      * (Highcharts, Highstock, Gantt) Whether to use HTML to render the series
      * label.
@@ -167685,7 +170867,7 @@ export interface SeriesLastVisiblePriceOptionsObject {
     width?: number;
 }
 /**
- * Information about the event.
+ * Information about the legend click event.
  *
  * **Note:** This option is deprecated in favor of
  * Highcharts.LegendItemClickEventObject.
@@ -168628,14 +171810,6 @@ export interface SeriesNetworkgraphDataLabelsOptionsObject {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) A collection of options for the individual nodes. The nodes in a
@@ -168863,15 +172037,6 @@ export interface SeriesOptions {
      * (Highcharts, Highstock) Define the visual z index of the series.
      */
     zIndex?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) Whether to zoom non-cartesian
-     * series. If `chart.zooming` is set, the option allows to disable zooming
-     * on an individual non-cartesian series. By default zooming is enabled for
-     * all series.
-     *
-     * Note: This option works only for non-cartesian series.
-     */
-    zoomEnabled?: boolean;
 }
 /**
  * The registry for all types of series options.
@@ -168903,6 +172068,7 @@ export interface SeriesOptionsRegistry {
     SeriesColumnOptions: SeriesColumnOptions;
     SeriesColumnpyramidOptions: SeriesColumnpyramidOptions;
     SeriesColumnrangeOptions: SeriesColumnrangeOptions;
+    SeriesContourOptions: SeriesContourOptions;
     SeriesCylinderOptions: SeriesCylinderOptions;
     SeriesDemaOptions: SeriesDemaOptions;
     SeriesDependencywheelOptions: SeriesDependencywheelOptions;
@@ -169264,14 +172430,6 @@ export interface SeriesOrganizationDataLabelsOptionsObject {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) An `organization` series. If the type option is not specified,
@@ -169588,14 +172746,6 @@ export interface SeriesPackedBubbleDataLabelsOptionsObject {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 export interface SeriesPackedBubbleDataLabelsTextPathOptionsObject {
     /**
@@ -170112,14 +173262,6 @@ PlotVariablepieDataLabelsAnimationOptions|Partial<AnimationOptionsObject>);
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highstock) A pivot points indicator. If the type option is not specified, it
@@ -170833,14 +173975,6 @@ SeriesDependencywheelNodesDataLabelsAnimationOptions|SeriesOrganizationNodesData
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) A collection of options for the individual nodes. The nodes in a
@@ -171699,28 +174833,29 @@ PlotArcdiagramLevelsStatesHoverAnimationOptions|PlotArcdiagramStatesHoverAnimati
 PlotAreasplineStatesHoverAnimationOptions|PlotAreaStatesHoverAnimationOptions|PlotAroonoscillatorStatesHoverAnimationOptions|PlotAroonStatesHoverAnimationOptions|PlotAtrStatesHoverAnimationOptions|
 PlotBarStatesHoverAnimationOptions|PlotBbStatesHoverAnimationOptions|PlotBellcurveStatesHoverAnimationOptions|PlotBubbleStatesHoverAnimationOptions|PlotBulletStatesHoverAnimationOptions|
 PlotCandlestickStatesHoverAnimationOptions|PlotCciStatesHoverAnimationOptions|PlotChaikinStatesHoverAnimationOptions|PlotCmfStatesHoverAnimationOptions|PlotCmoStatesHoverAnimationOptions|
-PlotColumnpyramidStatesHoverAnimationOptions|PlotColumnrangeStatesHoverAnimationOptions|PlotColumnStatesHoverAnimationOptions|PlotCylinderStatesHoverAnimationOptions|
-PlotDemaStatesHoverAnimationOptions|PlotDependencywheelLevelsStatesHoverAnimationOptions|PlotDependencywheelStatesHoverAnimationOptions|PlotDisparityindexStatesHoverAnimationOptions|
-PlotDmiStatesHoverAnimationOptions|PlotDpoStatesHoverAnimationOptions|PlotDumbbellStatesHoverAnimationOptions|PlotEmaStatesHoverAnimationOptions|PlotFlagsStatesHoverAnimationOptions|
-PlotFunnel3dStatesHoverAnimationOptions|PlotFunnelStatesHoverAnimationOptions|PlotGanttStatesHoverAnimationOptions|PlotHeatmapStatesHoverAnimationOptions|PlotHeikinashiStatesHoverAnimationOptions|
-PlotHistogramStatesHoverAnimationOptions|PlotHlcStatesHoverAnimationOptions|PlotHollowcandlestickStatesHoverAnimationOptions|PlotIkhStatesHoverAnimationOptions|PlotItemStatesHoverAnimationOptions|
-PlotKeltnerchannelsStatesHoverAnimationOptions|PlotKlingerStatesHoverAnimationOptions|PlotLinearregressionangleStatesHoverAnimationOptions|PlotLinearregressioninterceptStatesHoverAnimationOptions|
-PlotLinearregressionslopeStatesHoverAnimationOptions|PlotLinearregressionStatesHoverAnimationOptions|PlotLineStatesHoverAnimationOptions|PlotLollipopStatesHoverAnimationOptions|
-PlotMacdStatesHoverAnimationOptions|PlotMfiStatesHoverAnimationOptions|PlotMomentumStatesHoverAnimationOptions|PlotNatrStatesHoverAnimationOptions|PlotNetworkgraphStatesHoverAnimationOptions|
-PlotObvStatesHoverAnimationOptions|PlotOhlcStatesHoverAnimationOptions|PlotOrganizationLevelsStatesHoverAnimationOptions|PlotOrganizationStatesHoverAnimationOptions|
-PlotPackedbubbleStatesHoverAnimationOptions|PlotParetoStatesHoverAnimationOptions|PlotPcStatesHoverAnimationOptions|PlotPictorialStatesHoverAnimationOptions|PlotPieStatesHoverAnimationOptions|
-PlotPivotpointsStatesHoverAnimationOptions|PlotPointandfigureStatesHoverAnimationOptions|PlotPolygonStatesHoverAnimationOptions|PlotPpoStatesHoverAnimationOptions|
-PlotPriceenvelopesStatesHoverAnimationOptions|PlotPsarStatesHoverAnimationOptions|PlotPyramid3dStatesHoverAnimationOptions|PlotPyramidStatesHoverAnimationOptions|PlotRenkoStatesHoverAnimationOptions|
-PlotRocStatesHoverAnimationOptions|PlotRsiStatesHoverAnimationOptions|PlotSankeyLevelsStatesHoverAnimationOptions|PlotSankeyStatesHoverAnimationOptions|PlotScatter3dStatesHoverAnimationOptions|
-PlotScatterStatesHoverAnimationOptions|PlotSeriesStatesHoverAnimationOptions|PlotSlowstochasticStatesHoverAnimationOptions|PlotSmaStatesHoverAnimationOptions|PlotSplineStatesHoverAnimationOptions|
-PlotStochasticStatesHoverAnimationOptions|PlotStreamgraphStatesHoverAnimationOptions|PlotSunburstStatesHoverAnimationOptions|PlotSupertrendStatesHoverAnimationOptions|
-PlotTemaStatesHoverAnimationOptions|PlotTilemapStatesHoverAnimationOptions|PlotTimelineStatesHoverAnimationOptions|PlotTreegraphStatesHoverAnimationOptions|PlotTreemapStatesHoverAnimationOptions|
-PlotTrendlineStatesHoverAnimationOptions|PlotTrixStatesHoverAnimationOptions|PlotVariablepieStatesHoverAnimationOptions|PlotVariwideStatesHoverAnimationOptions|PlotVbpStatesHoverAnimationOptions|
-PlotVectorStatesHoverAnimationOptions|PlotVennStatesHoverAnimationOptions|PlotVwapStatesHoverAnimationOptions|PlotWaterfallStatesHoverAnimationOptions|PlotWilliamsrStatesHoverAnimationOptions|
-PlotWindbarbStatesHoverAnimationOptions|PlotWmaStatesHoverAnimationOptions|PlotWordcloudStatesHoverAnimationOptions|PlotXrangeStatesHoverAnimationOptions|PlotZigzagStatesHoverAnimationOptions|
-SeriesBarDataStatesHoverAnimationOptions|SeriesBulletDataStatesHoverAnimationOptions|SeriesColumnDataStatesHoverAnimationOptions|SeriesCylinderDataStatesHoverAnimationOptions|
-SeriesFunnel3dDataStatesHoverAnimationOptions|SeriesParetoDataStatesHoverAnimationOptions|SeriesPictorialDataStatesHoverAnimationOptions|SeriesPyramid3dDataStatesHoverAnimationOptions|
-SeriesRenkoDataStatesHoverAnimationOptions|Partial<AnimationOptionsObject>);
+PlotColumnpyramidStatesHoverAnimationOptions|PlotColumnrangeStatesHoverAnimationOptions|PlotColumnStatesHoverAnimationOptions|PlotContourStatesHoverAnimationOptions|
+PlotCylinderStatesHoverAnimationOptions|PlotDemaStatesHoverAnimationOptions|PlotDependencywheelLevelsStatesHoverAnimationOptions|PlotDependencywheelStatesHoverAnimationOptions|
+PlotDisparityindexStatesHoverAnimationOptions|PlotDmiStatesHoverAnimationOptions|PlotDpoStatesHoverAnimationOptions|PlotDumbbellStatesHoverAnimationOptions|PlotEmaStatesHoverAnimationOptions|
+PlotFlagsStatesHoverAnimationOptions|PlotFunnel3dStatesHoverAnimationOptions|PlotFunnelStatesHoverAnimationOptions|PlotGanttStatesHoverAnimationOptions|PlotHeatmapStatesHoverAnimationOptions|
+PlotHeikinashiStatesHoverAnimationOptions|PlotHistogramStatesHoverAnimationOptions|PlotHlcStatesHoverAnimationOptions|PlotHollowcandlestickStatesHoverAnimationOptions|
+PlotIkhStatesHoverAnimationOptions|PlotItemStatesHoverAnimationOptions|PlotKeltnerchannelsStatesHoverAnimationOptions|PlotKlingerStatesHoverAnimationOptions|
+PlotLinearregressionangleStatesHoverAnimationOptions|PlotLinearregressioninterceptStatesHoverAnimationOptions|PlotLinearregressionslopeStatesHoverAnimationOptions|
+PlotLinearregressionStatesHoverAnimationOptions|PlotLineStatesHoverAnimationOptions|PlotLollipopStatesHoverAnimationOptions|PlotMacdStatesHoverAnimationOptions|PlotMfiStatesHoverAnimationOptions|
+PlotMomentumStatesHoverAnimationOptions|PlotNatrStatesHoverAnimationOptions|PlotNetworkgraphStatesHoverAnimationOptions|PlotObvStatesHoverAnimationOptions|PlotOhlcStatesHoverAnimationOptions|
+PlotOrganizationLevelsStatesHoverAnimationOptions|PlotOrganizationStatesHoverAnimationOptions|PlotPackedbubbleStatesHoverAnimationOptions|PlotParetoStatesHoverAnimationOptions|
+PlotPcStatesHoverAnimationOptions|PlotPictorialStatesHoverAnimationOptions|PlotPieStatesHoverAnimationOptions|PlotPivotpointsStatesHoverAnimationOptions|PlotPointandfigureStatesHoverAnimationOptions|
+PlotPolygonStatesHoverAnimationOptions|PlotPpoStatesHoverAnimationOptions|PlotPriceenvelopesStatesHoverAnimationOptions|PlotPsarStatesHoverAnimationOptions|PlotPyramid3dStatesHoverAnimationOptions|
+PlotPyramidStatesHoverAnimationOptions|PlotRenkoStatesHoverAnimationOptions|PlotRocStatesHoverAnimationOptions|PlotRsiStatesHoverAnimationOptions|PlotSankeyLevelsStatesHoverAnimationOptions|
+PlotSankeyStatesHoverAnimationOptions|PlotScatter3dStatesHoverAnimationOptions|PlotScatterStatesHoverAnimationOptions|PlotSeriesStatesHoverAnimationOptions|
+PlotSlowstochasticStatesHoverAnimationOptions|PlotSmaStatesHoverAnimationOptions|PlotSplineStatesHoverAnimationOptions|PlotStochasticStatesHoverAnimationOptions|
+PlotStreamgraphStatesHoverAnimationOptions|PlotSunburstStatesHoverAnimationOptions|PlotSupertrendStatesHoverAnimationOptions|PlotTemaStatesHoverAnimationOptions|PlotTilemapStatesHoverAnimationOptions|
+PlotTimelineStatesHoverAnimationOptions|PlotTreegraphStatesHoverAnimationOptions|PlotTreemapStatesHoverAnimationOptions|PlotTrendlineStatesHoverAnimationOptions|PlotTrixStatesHoverAnimationOptions|
+PlotVariablepieStatesHoverAnimationOptions|PlotVariwideStatesHoverAnimationOptions|PlotVbpStatesHoverAnimationOptions|PlotVectorStatesHoverAnimationOptions|PlotVennStatesHoverAnimationOptions|
+PlotVwapStatesHoverAnimationOptions|PlotWaterfallStatesHoverAnimationOptions|PlotWilliamsrStatesHoverAnimationOptions|PlotWindbarbStatesHoverAnimationOptions|PlotWmaStatesHoverAnimationOptions|
+PlotWordcloudStatesHoverAnimationOptions|PlotXrangeStatesHoverAnimationOptions|PlotZigzagStatesHoverAnimationOptions|SeriesBarDataStatesHoverAnimationOptions|
+SeriesBulletDataStatesHoverAnimationOptions|SeriesColumnDataStatesHoverAnimationOptions|SeriesCylinderDataStatesHoverAnimationOptions|SeriesFunnel3dDataStatesHoverAnimationOptions|
+SeriesParetoDataStatesHoverAnimationOptions|SeriesPictorialDataStatesHoverAnimationOptions|SeriesPyramid3dDataStatesHoverAnimationOptions|SeriesRenkoDataStatesHoverAnimationOptions|
+Partial<AnimationOptionsObject>);
     /**
      * (Highmaps) The border color of the point in this state.
      */
@@ -171787,6 +174922,12 @@ SeriesRenkoDataStatesHoverAnimationOptions|Partial<AnimationOptionsObject>);
      */
     linkOpacity?: number;
     /**
+     * (Highcharts, Highstock) In Highcharts 1.0, the appearance of all markers
+     * belonging to the hovered series. For settings on the hover state of the
+     * individual point, see marker.states.hover.
+     */
+    marker?: PointMarkerOptionsObject;
+    /**
      * (Highcharts) The opacity of a point in treemap. When a point has
      * children, the visibility of the children is determined by the opacity.
      */
@@ -171809,34 +174950,34 @@ PlotAreasplineStatesInactiveAnimationOptions|PlotAreaStatesInactiveAnimationOpti
 PlotAtrStatesInactiveAnimationOptions|PlotBarStatesInactiveAnimationOptions|PlotBbStatesInactiveAnimationOptions|PlotBellcurveStatesInactiveAnimationOptions|PlotBubbleStatesInactiveAnimationOptions|
 PlotBulletStatesInactiveAnimationOptions|PlotCandlestickStatesInactiveAnimationOptions|PlotCciStatesInactiveAnimationOptions|PlotChaikinStatesInactiveAnimationOptions|
 PlotCmfStatesInactiveAnimationOptions|PlotCmoStatesInactiveAnimationOptions|PlotColumnpyramidStatesInactiveAnimationOptions|PlotColumnrangeStatesInactiveAnimationOptions|
-PlotColumnStatesInactiveAnimationOptions|PlotCylinderStatesInactiveAnimationOptions|PlotDemaStatesInactiveAnimationOptions|PlotDependencywheelLevelsStatesInactiveAnimationOptions|
-PlotDependencywheelStatesInactiveAnimationOptions|PlotDisparityindexStatesInactiveAnimationOptions|PlotDmiStatesInactiveAnimationOptions|PlotDpoStatesInactiveAnimationOptions|
-PlotDumbbellStatesInactiveAnimationOptions|PlotEmaStatesInactiveAnimationOptions|PlotFlagsStatesInactiveAnimationOptions|PlotFlowmapStatesInactiveAnimationOptions|
-PlotFunnel3dStatesInactiveAnimationOptions|PlotFunnelStatesInactiveAnimationOptions|PlotGanttStatesInactiveAnimationOptions|PlotGeoheatmapStatesInactiveAnimationOptions|
-PlotHeatmapStatesInactiveAnimationOptions|PlotHeikinashiStatesInactiveAnimationOptions|PlotHistogramStatesInactiveAnimationOptions|PlotHlcStatesInactiveAnimationOptions|
-PlotHollowcandlestickStatesInactiveAnimationOptions|PlotIkhStatesInactiveAnimationOptions|PlotItemStatesInactiveAnimationOptions|PlotKeltnerchannelsStatesInactiveAnimationOptions|
-PlotKlingerStatesInactiveAnimationOptions|PlotLinearregressionangleStatesInactiveAnimationOptions|PlotLinearregressioninterceptStatesInactiveAnimationOptions|
-PlotLinearregressionslopeStatesInactiveAnimationOptions|PlotLinearregressionStatesInactiveAnimationOptions|PlotLineStatesInactiveAnimationOptions|PlotLollipopStatesInactiveAnimationOptions|
-PlotMacdStatesInactiveAnimationOptions|PlotMapbubbleStatesInactiveAnimationOptions|PlotMaplineStatesInactiveAnimationOptions|PlotMappointStatesInactiveAnimationOptions|
-PlotMapStatesInactiveAnimationOptions|PlotMfiStatesInactiveAnimationOptions|PlotMomentumStatesInactiveAnimationOptions|PlotNatrStatesInactiveAnimationOptions|
-PlotNetworkgraphStatesInactiveAnimationOptions|PlotObvStatesInactiveAnimationOptions|PlotOhlcStatesInactiveAnimationOptions|PlotOrganizationLevelsStatesInactiveAnimationOptions|
-PlotOrganizationStatesInactiveAnimationOptions|PlotPackedbubbleStatesInactiveAnimationOptions|PlotParetoStatesInactiveAnimationOptions|PlotPcStatesInactiveAnimationOptions|
-PlotPictorialStatesInactiveAnimationOptions|PlotPieStatesInactiveAnimationOptions|PlotPivotpointsStatesInactiveAnimationOptions|PlotPointandfigureStatesInactiveAnimationOptions|
-PlotPolygonStatesInactiveAnimationOptions|PlotPpoStatesInactiveAnimationOptions|PlotPriceenvelopesStatesInactiveAnimationOptions|PlotPsarStatesInactiveAnimationOptions|
-PlotPyramid3dStatesInactiveAnimationOptions|PlotPyramidStatesInactiveAnimationOptions|PlotRenkoStatesInactiveAnimationOptions|PlotRocStatesInactiveAnimationOptions|
-PlotRsiStatesInactiveAnimationOptions|PlotSankeyLevelsStatesInactiveAnimationOptions|PlotSankeyStatesInactiveAnimationOptions|PlotScatter3dStatesInactiveAnimationOptions|
-PlotScatterStatesInactiveAnimationOptions|PlotSeriesStatesInactiveAnimationOptions|PlotSlowstochasticStatesInactiveAnimationOptions|PlotSmaStatesInactiveAnimationOptions|
-PlotSplineStatesInactiveAnimationOptions|PlotStochasticStatesInactiveAnimationOptions|PlotStreamgraphStatesInactiveAnimationOptions|PlotSunburstStatesInactiveAnimationOptions|
-PlotSupertrendStatesInactiveAnimationOptions|PlotTemaStatesInactiveAnimationOptions|PlotTiledwebmapStatesInactiveAnimationOptions|PlotTilemapStatesInactiveAnimationOptions|
-PlotTimelineStatesInactiveAnimationOptions|PlotTreegraphStatesInactiveAnimationOptions|PlotTreemapStatesInactiveAnimationOptions|PlotTrendlineStatesInactiveAnimationOptions|
-PlotTrixStatesInactiveAnimationOptions|PlotVariablepieStatesInactiveAnimationOptions|PlotVariwideStatesInactiveAnimationOptions|PlotVbpStatesInactiveAnimationOptions|
-PlotVectorStatesInactiveAnimationOptions|PlotVennStatesInactiveAnimationOptions|PlotVwapStatesInactiveAnimationOptions|PlotWaterfallStatesInactiveAnimationOptions|
-PlotWilliamsrStatesInactiveAnimationOptions|PlotWindbarbStatesInactiveAnimationOptions|PlotWmaStatesInactiveAnimationOptions|PlotWordcloudStatesInactiveAnimationOptions|
-PlotXrangeStatesInactiveAnimationOptions|PlotZigzagStatesInactiveAnimationOptions|SeriesBarDataStatesInactiveAnimationOptions|SeriesBulletDataStatesInactiveAnimationOptions|
-SeriesColumnDataStatesInactiveAnimationOptions|SeriesCylinderDataStatesInactiveAnimationOptions|SeriesFunnel3dDataStatesInactiveAnimationOptions|SeriesGeoheatmapDataStatesInactiveAnimationOptions|
-SeriesMapbubbleDataStatesInactiveAnimationOptions|SeriesMapDataStatesInactiveAnimationOptions|SeriesMaplineDataStatesInactiveAnimationOptions|SeriesMappointDataStatesInactiveAnimationOptions|
-SeriesParetoDataStatesInactiveAnimationOptions|SeriesPictorialDataStatesInactiveAnimationOptions|SeriesPyramid3dDataStatesInactiveAnimationOptions|SeriesRenkoDataStatesInactiveAnimationOptions|
-Partial<AnimationOptionsObject>);
+PlotColumnStatesInactiveAnimationOptions|PlotContourStatesInactiveAnimationOptions|PlotCylinderStatesInactiveAnimationOptions|PlotDemaStatesInactiveAnimationOptions|
+PlotDependencywheelLevelsStatesInactiveAnimationOptions|PlotDependencywheelStatesInactiveAnimationOptions|PlotDisparityindexStatesInactiveAnimationOptions|PlotDmiStatesInactiveAnimationOptions|
+PlotDpoStatesInactiveAnimationOptions|PlotDumbbellStatesInactiveAnimationOptions|PlotEmaStatesInactiveAnimationOptions|PlotFlagsStatesInactiveAnimationOptions|
+PlotFlowmapStatesInactiveAnimationOptions|PlotFunnel3dStatesInactiveAnimationOptions|PlotFunnelStatesInactiveAnimationOptions|PlotGanttStatesInactiveAnimationOptions|
+PlotGeoheatmapStatesInactiveAnimationOptions|PlotHeatmapStatesInactiveAnimationOptions|PlotHeikinashiStatesInactiveAnimationOptions|PlotHistogramStatesInactiveAnimationOptions|
+PlotHlcStatesInactiveAnimationOptions|PlotHollowcandlestickStatesInactiveAnimationOptions|PlotIkhStatesInactiveAnimationOptions|PlotItemStatesInactiveAnimationOptions|
+PlotKeltnerchannelsStatesInactiveAnimationOptions|PlotKlingerStatesInactiveAnimationOptions|PlotLinearregressionangleStatesInactiveAnimationOptions|
+PlotLinearregressioninterceptStatesInactiveAnimationOptions|PlotLinearregressionslopeStatesInactiveAnimationOptions|PlotLinearregressionStatesInactiveAnimationOptions|
+PlotLineStatesInactiveAnimationOptions|PlotLollipopStatesInactiveAnimationOptions|PlotMacdStatesInactiveAnimationOptions|PlotMapbubbleStatesInactiveAnimationOptions|
+PlotMaplineStatesInactiveAnimationOptions|PlotMappointStatesInactiveAnimationOptions|PlotMapStatesInactiveAnimationOptions|PlotMfiStatesInactiveAnimationOptions|
+PlotMomentumStatesInactiveAnimationOptions|PlotNatrStatesInactiveAnimationOptions|PlotNetworkgraphStatesInactiveAnimationOptions|PlotObvStatesInactiveAnimationOptions|
+PlotOhlcStatesInactiveAnimationOptions|PlotOrganizationLevelsStatesInactiveAnimationOptions|PlotOrganizationStatesInactiveAnimationOptions|PlotPackedbubbleStatesInactiveAnimationOptions|
+PlotParetoStatesInactiveAnimationOptions|PlotPcStatesInactiveAnimationOptions|PlotPictorialStatesInactiveAnimationOptions|PlotPieStatesInactiveAnimationOptions|
+PlotPivotpointsStatesInactiveAnimationOptions|PlotPointandfigureStatesInactiveAnimationOptions|PlotPolygonStatesInactiveAnimationOptions|PlotPpoStatesInactiveAnimationOptions|
+PlotPriceenvelopesStatesInactiveAnimationOptions|PlotPsarStatesInactiveAnimationOptions|PlotPyramid3dStatesInactiveAnimationOptions|PlotPyramidStatesInactiveAnimationOptions|
+PlotRenkoStatesInactiveAnimationOptions|PlotRocStatesInactiveAnimationOptions|PlotRsiStatesInactiveAnimationOptions|PlotSankeyLevelsStatesInactiveAnimationOptions|
+PlotSankeyStatesInactiveAnimationOptions|PlotScatter3dStatesInactiveAnimationOptions|PlotScatterStatesInactiveAnimationOptions|PlotSeriesStatesInactiveAnimationOptions|
+PlotSlowstochasticStatesInactiveAnimationOptions|PlotSmaStatesInactiveAnimationOptions|PlotSplineStatesInactiveAnimationOptions|PlotStochasticStatesInactiveAnimationOptions|
+PlotStreamgraphStatesInactiveAnimationOptions|PlotSunburstStatesInactiveAnimationOptions|PlotSupertrendStatesInactiveAnimationOptions|PlotTemaStatesInactiveAnimationOptions|
+PlotTiledwebmapStatesInactiveAnimationOptions|PlotTilemapStatesInactiveAnimationOptions|PlotTimelineStatesInactiveAnimationOptions|PlotTreegraphStatesInactiveAnimationOptions|
+PlotTreemapStatesInactiveAnimationOptions|PlotTrendlineStatesInactiveAnimationOptions|PlotTrixStatesInactiveAnimationOptions|PlotVariablepieStatesInactiveAnimationOptions|
+PlotVariwideStatesInactiveAnimationOptions|PlotVbpStatesInactiveAnimationOptions|PlotVectorStatesInactiveAnimationOptions|PlotVennStatesInactiveAnimationOptions|PlotVwapStatesInactiveAnimationOptions|
+PlotWaterfallStatesInactiveAnimationOptions|PlotWilliamsrStatesInactiveAnimationOptions|PlotWindbarbStatesInactiveAnimationOptions|PlotWmaStatesInactiveAnimationOptions|
+PlotWordcloudStatesInactiveAnimationOptions|PlotXrangeStatesInactiveAnimationOptions|PlotZigzagStatesInactiveAnimationOptions|SeriesBarDataStatesInactiveAnimationOptions|
+SeriesBulletDataStatesInactiveAnimationOptions|SeriesColumnDataStatesInactiveAnimationOptions|SeriesCylinderDataStatesInactiveAnimationOptions|SeriesFunnel3dDataStatesInactiveAnimationOptions|
+SeriesGeoheatmapDataStatesInactiveAnimationOptions|SeriesMapbubbleDataStatesInactiveAnimationOptions|SeriesMapDataStatesInactiveAnimationOptions|SeriesMaplineDataStatesInactiveAnimationOptions|
+SeriesMappointDataStatesInactiveAnimationOptions|SeriesParetoDataStatesInactiveAnimationOptions|SeriesPictorialDataStatesInactiveAnimationOptions|SeriesPyramid3dDataStatesInactiveAnimationOptions|
+SeriesRenkoDataStatesInactiveAnimationOptions|Partial<AnimationOptionsObject>);
     /**
      * (Highcharts, Highstock) Enable or disable the inactive state for a series
      */
@@ -171905,26 +175046,26 @@ PlotAreasplineStatesSelectAnimationOptions|PlotAreaStatesSelectAnimationOptions|
 PlotAtrStatesSelectAnimationOptions|PlotBarStatesSelectAnimationOptions|PlotBbStatesSelectAnimationOptions|PlotBellcurveStatesSelectAnimationOptions|PlotBubbleStatesSelectAnimationOptions|
 PlotBulletStatesSelectAnimationOptions|PlotCandlestickStatesSelectAnimationOptions|PlotCciStatesSelectAnimationOptions|PlotChaikinStatesSelectAnimationOptions|PlotCmfStatesSelectAnimationOptions|
 PlotCmoStatesSelectAnimationOptions|PlotColumnpyramidStatesSelectAnimationOptions|PlotColumnrangeStatesSelectAnimationOptions|PlotColumnStatesSelectAnimationOptions|
-PlotCylinderStatesSelectAnimationOptions|PlotDemaStatesSelectAnimationOptions|PlotDependencywheelLevelsStatesSelectAnimationOptions|PlotDependencywheelStatesSelectAnimationOptions|
-PlotDisparityindexStatesSelectAnimationOptions|PlotDmiStatesSelectAnimationOptions|PlotDpoStatesSelectAnimationOptions|PlotDumbbellStatesSelectAnimationOptions|PlotEmaStatesSelectAnimationOptions|
-PlotFlagsStatesSelectAnimationOptions|PlotFunnel3dStatesSelectAnimationOptions|PlotFunnelStatesSelectAnimationOptions|PlotGanttStatesSelectAnimationOptions|PlotHeatmapStatesSelectAnimationOptions|
-PlotHeikinashiStatesSelectAnimationOptions|PlotHistogramStatesSelectAnimationOptions|PlotHlcStatesSelectAnimationOptions|PlotHollowcandlestickStatesSelectAnimationOptions|
-PlotIkhStatesSelectAnimationOptions|PlotItemStatesSelectAnimationOptions|PlotKeltnerchannelsStatesSelectAnimationOptions|PlotKlingerStatesSelectAnimationOptions|
-PlotLinearregressionangleStatesSelectAnimationOptions|PlotLinearregressioninterceptStatesSelectAnimationOptions|PlotLinearregressionslopeStatesSelectAnimationOptions|
-PlotLinearregressionStatesSelectAnimationOptions|PlotLineStatesSelectAnimationOptions|PlotLollipopStatesSelectAnimationOptions|PlotMacdStatesSelectAnimationOptions|PlotMfiStatesSelectAnimationOptions|
-PlotMomentumStatesSelectAnimationOptions|PlotNatrStatesSelectAnimationOptions|PlotNetworkgraphStatesSelectAnimationOptions|PlotObvStatesSelectAnimationOptions|PlotOhlcStatesSelectAnimationOptions|
-PlotOrganizationLevelsStatesSelectAnimationOptions|PlotOrganizationStatesSelectAnimationOptions|PlotPackedbubbleStatesSelectAnimationOptions|PlotParetoStatesSelectAnimationOptions|
-PlotPcStatesSelectAnimationOptions|PlotPictorialStatesSelectAnimationOptions|PlotPieStatesSelectAnimationOptions|PlotPivotpointsStatesSelectAnimationOptions|
-PlotPointandfigureStatesSelectAnimationOptions|PlotPolygonStatesSelectAnimationOptions|PlotPpoStatesSelectAnimationOptions|PlotPriceenvelopesStatesSelectAnimationOptions|
-PlotPsarStatesSelectAnimationOptions|PlotPyramid3dStatesSelectAnimationOptions|PlotPyramidStatesSelectAnimationOptions|PlotRenkoStatesSelectAnimationOptions|PlotRocStatesSelectAnimationOptions|
-PlotRsiStatesSelectAnimationOptions|PlotSankeyLevelsStatesSelectAnimationOptions|PlotSankeyStatesSelectAnimationOptions|PlotScatter3dStatesSelectAnimationOptions|
-PlotScatterStatesSelectAnimationOptions|PlotSeriesStatesSelectAnimationOptions|PlotSlowstochasticStatesSelectAnimationOptions|PlotSmaStatesSelectAnimationOptions|
-PlotSplineStatesSelectAnimationOptions|PlotStochasticStatesSelectAnimationOptions|PlotStreamgraphStatesSelectAnimationOptions|PlotSunburstStatesSelectAnimationOptions|
-PlotSupertrendStatesSelectAnimationOptions|PlotTemaStatesSelectAnimationOptions|PlotTilemapStatesSelectAnimationOptions|PlotTimelineStatesSelectAnimationOptions|
-PlotTreegraphStatesSelectAnimationOptions|PlotTreemapStatesSelectAnimationOptions|PlotTrendlineStatesSelectAnimationOptions|PlotTrixStatesSelectAnimationOptions|
-PlotVariablepieStatesSelectAnimationOptions|PlotVariwideStatesSelectAnimationOptions|PlotVbpStatesSelectAnimationOptions|PlotVectorStatesSelectAnimationOptions|PlotVennStatesSelectAnimationOptions|
-PlotVwapStatesSelectAnimationOptions|PlotWaterfallStatesSelectAnimationOptions|PlotWilliamsrStatesSelectAnimationOptions|PlotWindbarbStatesSelectAnimationOptions|PlotWmaStatesSelectAnimationOptions|
-PlotWordcloudStatesSelectAnimationOptions|PlotXrangeStatesSelectAnimationOptions|PlotZigzagStatesSelectAnimationOptions|SeriesBarDataStatesSelectAnimationOptions|
+PlotContourStatesSelectAnimationOptions|PlotCylinderStatesSelectAnimationOptions|PlotDemaStatesSelectAnimationOptions|PlotDependencywheelLevelsStatesSelectAnimationOptions|
+PlotDependencywheelStatesSelectAnimationOptions|PlotDisparityindexStatesSelectAnimationOptions|PlotDmiStatesSelectAnimationOptions|PlotDpoStatesSelectAnimationOptions|
+PlotDumbbellStatesSelectAnimationOptions|PlotEmaStatesSelectAnimationOptions|PlotFlagsStatesSelectAnimationOptions|PlotFunnel3dStatesSelectAnimationOptions|PlotFunnelStatesSelectAnimationOptions|
+PlotGanttStatesSelectAnimationOptions|PlotHeatmapStatesSelectAnimationOptions|PlotHeikinashiStatesSelectAnimationOptions|PlotHistogramStatesSelectAnimationOptions|PlotHlcStatesSelectAnimationOptions|
+PlotHollowcandlestickStatesSelectAnimationOptions|PlotIkhStatesSelectAnimationOptions|PlotItemStatesSelectAnimationOptions|PlotKeltnerchannelsStatesSelectAnimationOptions|
+PlotKlingerStatesSelectAnimationOptions|PlotLinearregressionangleStatesSelectAnimationOptions|PlotLinearregressioninterceptStatesSelectAnimationOptions|
+PlotLinearregressionslopeStatesSelectAnimationOptions|PlotLinearregressionStatesSelectAnimationOptions|PlotLineStatesSelectAnimationOptions|PlotLollipopStatesSelectAnimationOptions|
+PlotMacdStatesSelectAnimationOptions|PlotMfiStatesSelectAnimationOptions|PlotMomentumStatesSelectAnimationOptions|PlotNatrStatesSelectAnimationOptions|PlotNetworkgraphStatesSelectAnimationOptions|
+PlotObvStatesSelectAnimationOptions|PlotOhlcStatesSelectAnimationOptions|PlotOrganizationLevelsStatesSelectAnimationOptions|PlotOrganizationStatesSelectAnimationOptions|
+PlotPackedbubbleStatesSelectAnimationOptions|PlotParetoStatesSelectAnimationOptions|PlotPcStatesSelectAnimationOptions|PlotPictorialStatesSelectAnimationOptions|PlotPieStatesSelectAnimationOptions|
+PlotPivotpointsStatesSelectAnimationOptions|PlotPointandfigureStatesSelectAnimationOptions|PlotPolygonStatesSelectAnimationOptions|PlotPpoStatesSelectAnimationOptions|
+PlotPriceenvelopesStatesSelectAnimationOptions|PlotPsarStatesSelectAnimationOptions|PlotPyramid3dStatesSelectAnimationOptions|PlotPyramidStatesSelectAnimationOptions|
+PlotRenkoStatesSelectAnimationOptions|PlotRocStatesSelectAnimationOptions|PlotRsiStatesSelectAnimationOptions|PlotSankeyLevelsStatesSelectAnimationOptions|PlotSankeyStatesSelectAnimationOptions|
+PlotScatter3dStatesSelectAnimationOptions|PlotScatterStatesSelectAnimationOptions|PlotSeriesStatesSelectAnimationOptions|PlotSlowstochasticStatesSelectAnimationOptions|
+PlotSmaStatesSelectAnimationOptions|PlotSplineStatesSelectAnimationOptions|PlotStochasticStatesSelectAnimationOptions|PlotStreamgraphStatesSelectAnimationOptions|
+PlotSunburstStatesSelectAnimationOptions|PlotSupertrendStatesSelectAnimationOptions|PlotTemaStatesSelectAnimationOptions|PlotTilemapStatesSelectAnimationOptions|
+PlotTimelineStatesSelectAnimationOptions|PlotTreegraphStatesSelectAnimationOptions|PlotTreemapStatesSelectAnimationOptions|PlotTrendlineStatesSelectAnimationOptions|
+PlotTrixStatesSelectAnimationOptions|PlotVariablepieStatesSelectAnimationOptions|PlotVariwideStatesSelectAnimationOptions|PlotVbpStatesSelectAnimationOptions|PlotVectorStatesSelectAnimationOptions|
+PlotVennStatesSelectAnimationOptions|PlotVwapStatesSelectAnimationOptions|PlotWaterfallStatesSelectAnimationOptions|PlotWilliamsrStatesSelectAnimationOptions|PlotWindbarbStatesSelectAnimationOptions|
+PlotWmaStatesSelectAnimationOptions|PlotWordcloudStatesSelectAnimationOptions|PlotXrangeStatesSelectAnimationOptions|PlotZigzagStatesSelectAnimationOptions|SeriesBarDataStatesSelectAnimationOptions|
 SeriesBulletDataStatesSelectAnimationOptions|SeriesColumnDataStatesSelectAnimationOptions|SeriesCylinderDataStatesSelectAnimationOptions|SeriesFunnel3dDataStatesSelectAnimationOptions|
 SeriesParetoDataStatesSelectAnimationOptions|SeriesPictorialDataStatesSelectAnimationOptions|SeriesPyramid3dDataStatesSelectAnimationOptions|SeriesRenkoDataStatesSelectAnimationOptions|
 Partial<AnimationOptionsObject>);
@@ -171967,6 +175108,12 @@ Partial<AnimationOptionsObject>);
      * hovered series.
      */
     lineWidthPlus?: number;
+    /**
+     * (Highcharts, Highstock) In Highcharts 1.0, the appearance of all markers
+     * belonging to the hovered series. For settings on the hover state of the
+     * individual point, see marker.states.hover.
+     */
+    marker?: PointMarkerOptionsObject;
 }
 /**
  * (Highcharts, Highstock, Gantt) Enable or disable the initial animation when a
@@ -172365,14 +175512,6 @@ export interface SeriesSunburstDataLabelsOptionsObject {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) A `sunburst` series. If the type option is not specified, it is
@@ -172534,11 +175673,11 @@ export interface SeriesTooltipOptionsObject {
      */
     changeDecimals?: number;
     /**
-     * (Highstock) The HTML of the grouped point's nodes in the tooltip. Works
-     * only for Treemap series grouping and analogously to pointFormat.
+     * (Highstock) The HTML of the cluster point's in the tooltip. Works only
+     * with marker-clusters module and analogously to pointFormat.
      *
-     * The grouped nodes point tooltip can be also formatted using
-     * `tooltip.formatter` callback function and `point.isGroupNode` flag.
+     * The cluster tooltip can be also formatted using `tooltip.formatter`
+     * callback function and `point.isCluster` flag.
      */
     clusterFormat?: string;
     /**
@@ -172661,9 +175800,9 @@ export interface SeriesTooltipOptionsObject {
 PlotArearangeTooltipPositionOptions|PlotAreasplinerangeTooltipPositionOptions|PlotAreasplineTooltipPositionOptions|PlotAreaTooltipPositionOptions|PlotAroonoscillatorTooltipPositionOptions|
 PlotAroonTooltipPositionOptions|PlotAtrTooltipPositionOptions|PlotBarTooltipPositionOptions|PlotBbTooltipPositionOptions|PlotBellcurveTooltipPositionOptions|PlotBoxplotTooltipPositionOptions|
 PlotBubbleTooltipPositionOptions|PlotBulletTooltipPositionOptions|PlotCandlestickTooltipPositionOptions|PlotCciTooltipPositionOptions|PlotChaikinTooltipPositionOptions|PlotCmfTooltipPositionOptions|
-PlotCmoTooltipPositionOptions|PlotColumnpyramidTooltipPositionOptions|PlotColumnrangeTooltipPositionOptions|PlotColumnTooltipPositionOptions|PlotCylinderTooltipPositionOptions|
-PlotDemaTooltipPositionOptions|PlotDependencywheelTooltipPositionOptions|PlotDisparityindexTooltipPositionOptions|PlotDmiTooltipPositionOptions|PlotDpoTooltipPositionOptions|
-PlotDumbbellTooltipPositionOptions|PlotEmaTooltipPositionOptions|PlotErrorbarTooltipPositionOptions|PlotFlagsTooltipPositionOptions|PlotFlowmapTooltipPositionOptions|
+PlotCmoTooltipPositionOptions|PlotColumnpyramidTooltipPositionOptions|PlotColumnrangeTooltipPositionOptions|PlotColumnTooltipPositionOptions|PlotContourTooltipPositionOptions|
+PlotCylinderTooltipPositionOptions|PlotDemaTooltipPositionOptions|PlotDependencywheelTooltipPositionOptions|PlotDisparityindexTooltipPositionOptions|PlotDmiTooltipPositionOptions|
+PlotDpoTooltipPositionOptions|PlotDumbbellTooltipPositionOptions|PlotEmaTooltipPositionOptions|PlotErrorbarTooltipPositionOptions|PlotFlagsTooltipPositionOptions|PlotFlowmapTooltipPositionOptions|
 PlotFunnel3dTooltipPositionOptions|PlotFunnelTooltipPositionOptions|PlotGanttTooltipPositionOptions|PlotGaugeTooltipPositionOptions|PlotGeoheatmapTooltipPositionOptions|
 PlotHeatmapTooltipPositionOptions|PlotHeikinashiTooltipPositionOptions|PlotHistogramTooltipPositionOptions|PlotHlcTooltipPositionOptions|PlotHollowcandlestickTooltipPositionOptions|
 PlotIkhTooltipPositionOptions|PlotItemTooltipPositionOptions|PlotKeltnerchannelsTooltipPositionOptions|PlotKlingerTooltipPositionOptions|PlotLinearregressionangleTooltipPositionOptions|
@@ -172680,6 +175819,11 @@ PlotTilemapTooltipPositionOptions|PlotTimelineTooltipPositionOptions|PlotTreegra
 PlotTrixTooltipPositionOptions|PlotVariablepieTooltipPositionOptions|PlotVariwideTooltipPositionOptions|PlotVbpTooltipPositionOptions|PlotVectorTooltipPositionOptions|PlotVennTooltipPositionOptions|
 PlotVwapTooltipPositionOptions|PlotWaterfallTooltipPositionOptions|PlotWilliamsrTooltipPositionOptions|PlotWindbarbTooltipPositionOptions|PlotWmaTooltipPositionOptions|
 PlotWordcloudTooltipPositionOptions|PlotXrangeTooltipPositionOptions|PlotZigzagTooltipPositionOptions);
+    /**
+     * (Highstock) The number of milliseconds to wait until the tooltip is shown
+     * when mouse over a point. Works on initial hover.
+     */
+    showDelay?: number;
     /**
      * (Highstock) Number of decimals in indicator series.
      */
@@ -172957,14 +176101,6 @@ export interface SeriesTreegraphDataLabelsOptionsObject {
      * pixels.
      */
     y?: number;
-    /**
-     * (Highcharts) The z index of the data labels group. Does not apply below
-     * series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * (Highcharts) A `treegraph` series. If the type option is not specified, it is
@@ -176229,14 +179365,6 @@ export interface TimelineDataLabelsOptionsObject {
      * label relative to the point in pixels.
      */
     y?: number;
-    /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The z index of the data labels
-     * group. Does not apply below series level options.
-     *
-     * Use a `zIndex` of 6 to display it above the series, or use a `zIndex` of
-     * 2 to display it behind the series.
-     */
-    zIndex?: number;
 }
 /**
  * Normalized interval.
@@ -176485,12 +179613,12 @@ export interface TooltipOptions {
      */
     className?: string;
     /**
-     * (Highcharts, Highstock, Highmaps, Gantt) The HTML of the grouped point's
-     * nodes in the tooltip. Works only for Treemap series grouping and
-     * analogously to pointFormat.
+     * (Highcharts, Highstock, Highmaps, Gantt) The HTML of the cluster point's
+     * in the tooltip. Works only with marker-clusters module and analogously to
+     * pointFormat.
      *
-     * The grouped nodes point tooltip can be also formatted using
-     * `tooltip.formatter` callback function and `point.isGroupNode` flag.
+     * The cluster tooltip can be also formatted using `tooltip.formatter`
+     * callback function and `point.isCluster` flag.
      */
     clusterFormat?: string;
     /**
@@ -176734,6 +179862,12 @@ export interface TooltipOptions {
      * precedence over `tooltip.shared`.
      */
     shared?: boolean;
+    /**
+     * (Highcharts, Highstock, Highmaps, Gantt) The number of milliseconds to
+     * wait until the tooltip is shown when mouse over a point. Works on initial
+     * hover.
+     */
+    showDelay?: number;
     /**
      * (Highcharts, Highstock) Proximity snap for graphs or single points. It
      * defaults to 10 for mouse-powered devices and 25 for touch devices.
@@ -177791,6 +180925,14 @@ export interface XAxisOptions {
      */
     startOnTick?: boolean;
     /**
+     * (Highcharts, Highstock, Gantt) For vertical axes only. Setting the static
+     * scale ensures that each tick unit is translated into a fixed pixel
+     * height. For example, setting the static scale to 24 results in each Y
+     * axis category taking up 24 pixels, and the height of the chart adjusts.
+     * Adding or removing items will make the chart resize.
+     */
+    staticScale?: number;
+    /**
      * (Highcharts, Highstock, Gantt) The amount of ticks to draw on the axis.
      * This opens up for aligning the ticks of multiple charts or panes within a
      * chart. This option overrides the `tickPixelInterval` option.
@@ -178316,7 +181458,8 @@ export interface XAxisScrollbarOptions {
     /**
      * (Highstock) Whether to redraw the main chart as the scrollbar or the
      * navigator zoomed window is moved. Defaults to `true` for modern browsers
-     * and `false` for legacy IE browsers as well as mobile devices.
+     * and `false` for legacy IE browsers as well as mobile devices. This option
+     * works regardless of whether the scrollbar is enabled or not.
      */
     liveRedraw?: boolean;
     /**
@@ -179616,11 +182759,11 @@ export interface YAxisOptions {
      */
     startOnTick?: boolean;
     /**
-     * (Gantt) For vertical axes only. Setting the static scale ensures that
-     * each tick unit is translated into a fixed pixel height. For example,
-     * setting the static scale to 24 results in each Y axis category taking up
-     * 24 pixels, and the height of the chart adjusts. Adding or removing items
-     * will make the chart resize.
+     * (Highcharts, Highstock, Gantt) For vertical axes only. Setting the static
+     * scale ensures that each tick unit is translated into a fixed pixel
+     * height. For example, setting the static scale to 24 results in each Y
+     * axis category taking up 24 pixels, and the height of the chart adjusts.
+     * Adding or removing items will make the chart resize.
      */
     staticScale?: number;
     /**
@@ -180251,7 +183394,8 @@ export interface YAxisScrollbarOptions {
     /**
      * (Highstock) Whether to redraw the main chart as the scrollbar or the
      * navigator zoomed window is moved. Defaults to `true` for modern browsers
-     * and `false` for legacy IE browsers as well as mobile devices.
+     * and `false` for legacy IE browsers as well as mobile devices. This option
+     * works regardless of whether the scrollbar is enabled or not.
      */
     liveRedraw?: boolean;
     /**
@@ -181224,6 +184368,14 @@ export interface ZAxisOptions {
      * option with the `minPadding` option to control the axis start.
      */
     startOnTick?: boolean;
+    /**
+     * (Highcharts, Highstock, Gantt) For vertical axes only. Setting the static
+     * scale ensures that each tick unit is translated into a fixed pixel
+     * height. For example, setting the static scale to 24 results in each Y
+     * axis category taking up 24 pixels, and the height of the chart adjusts.
+     * Adding or removing items will make the chart resize.
+     */
+    staticScale?: number;
     /**
      * (Highcharts, Highstock, Gantt) The amount of ticks to draw on the axis.
      * This opens up for aligning the ticks of multiple charts or panes within a
@@ -183752,7 +186904,7 @@ export class Series {
     userOptions: SeriesOptionsType;
     /**
      * Read only. The series' visibility state as set by Series#show,
-     * Series#hide, or in the initial configuration.
+     * Series#hide, or in the initial configuration. True by default.
      */
     visible: boolean;
     /**
@@ -183814,9 +186966,10 @@ export class Series {
     drawGraph(): void;
     /**
      * Draw the markers for line-like series types, and columns or other
-     * graphical representation for Point objects for other series types. The
-     * resulting element is typically stored as Point.graphic, and is created on
-     * the first call and updated and moved on subsequent calls.
+     * graphical representation for Highcharts.Point objects for other series
+     * types. The resulting element is typically stored as
+     * Highcharts.Point#graphic, and is created on the first call and updated
+     * and moved on subsequent calls.
      */
     drawPoints(): void;
     /**
@@ -183970,7 +187123,7 @@ export class Series {
      * data array is passed by reference (except in case of `updatePoints`), and
      * may later be mutated when updating the chart data.
      *
-     * Note the difference in behaviour when setting the same amount of points,
+     * Note the difference in behavior when setting the same amount of points,
      * or a different amount of points, as handled by the `updatePoints`
      * parameter.
      *
@@ -185194,6 +188347,9 @@ export class Tooltip {
      * In case no user defined formatter is given, this will be used. Note that
      * the context here is an object holding point, series, x, y etc.
      *
+     * @param tooltip
+     *        The tooltip instance.
+     *
      * @return Returns a string (single tooltip and shared) or an array of
      *         strings (split tooltip)
      */
@@ -185280,10 +188436,6 @@ export let dateFormats: Record<string, TimeFormatCallbackFunction>;
  * Global default settings.
  */
 export let defaultOptions: Options;
-/**
- * Properties to keep after update if the point instances should be preserved
- */
-export let keepPropsForPoints: any;
 /**
  * Theme options that should get applied to the chart. In module mode it might
  * not be possible to change this property because of read-only restrictions,
@@ -185407,14 +188559,6 @@ export function chart(options: Options, callback?: ChartCallbackFunction): Chart
  * @return Returns the Chart object.
  */
 export function chart(renderTo: (string|HTMLDOMElement), options: Options, callback?: ChartCallbackFunction): Chart;
-/**
- * Internal clear timeout. The function checks that the `id` was not removed
- * (e.g. by `chart.destroy()`). For the details see issue .7901.
- *
- * @param id
- *        Id of a timeout.
- */
-export function clearTimeout(id: (number|undefined)): void;
 /**
  * Creates a color instance out of a color string.
  *
@@ -185744,6 +188888,15 @@ export function isClass(obj: (object|undefined)): boolean;
  */
 export function isDOMElement(obj: any): boolean;
 /**
+ * Utility function to check if object is a function.
+ *
+ * @param obj
+ *        The item to check.
+ *
+ * @return True if the argument is a function.
+ */
+export function isFunction(obj: any): boolean;
+/**
  * Utility function to check if an item is a number and it is finite (not NaN,
  * Infinity or -Infinity).
  *
@@ -185888,18 +189041,6 @@ export function pad(number: number, length?: number, padder?: string): string;
  */
 export function pick<T>(...items: Array<(T|null|undefined)>): T;
 /**
- * Adds an item to an array, if it is not present in the array.
- *
- * @param array
- *        The array to add the item to.
- *
- * @param item
- *        The item to add.
- *
- * @return Returns true, if the item was not present and has been added.
- */
-export function pushUnique(array: Array<unknown>, item: unknown): boolean;
-/**
  * Return a length based on either the integer value, or a percentage of a base.
  *
  * @param value
@@ -185930,20 +189071,6 @@ export function relativeLength(value: RelativeSize, base: number, offset?: numbe
  *        the element and optionally the type are removed.
  */
 export function removeEvent<T>(el: (T|Class<T>), type?: string, fn?: EventCallbackFunction<T>): void;
-/**
- * Replaces text in a string with a given replacement in a loop to catch nested
- * matches after previous replacements.
- *
- * @param text
- *        Text to search and modify.
- *
- * @param replacements
- *        One or multiple tuples with search pattern (`[0]: (string|RegExp)`)
- *        and replacement (`[1]: string`) for matching text.
- *
- * @return Text with replacements.
- */
-export function replaceNested(text: string, ...replacements: Array<(RegExp|string)>): string;
 /**
  * Old factory to create new series prototypes.
  *
@@ -186154,24 +189281,6 @@ export function centerImage(): void;
  */
 export function circle(x: number, y: number, w: number, h: number): SVGPathArray;
 /**
- * Utility for crisping a line position to the nearest full pixel depening on
- * the line width
- *
- * @param value
- *        The raw pixel position
- *
- * @param lineWidth
- *        The line width
- *
- * @param inverted
- *        Whether the containing group is inverted. Crisping round numbers on
- *        the y-scale need to go to the other side because the coordinate system
- *        is flipped (scaleY is -1)
- *
- * @return The pixel position to use for a crisp display
- */
-export function crisp(value: number, lineWidth: number, inverted?: boolean): number;
-/**
  * Shorthand to get a cached `Intl.DateTimeFormat` instance.
  */
 export function dateTimeFormat(): void;
@@ -186302,6 +189411,19 @@ export function rect(x: number, y: number, w: number, h: number, options?: Symbo
  *        Sets the renderer class as the default renderer.
  */
 export function registerRendererType(rendererType: string, rendererClass: Class<SVGRenderer>, setAsDefault: boolean): void;
+/**
+ * Registers class pattern of a series.
+ *
+ * @param seriesType
+ *        The series type as an identifier string in lower case.
+ *
+ * @param SeriesClass
+ *        The series class as a class pattern or a constructor function with
+ *        prototype.
+ *
+ * @return True if series type was added, false if it already exists.
+ */
+export function registerSeriesType(seriesType: string, SeriesClass: Function): boolean;
 /**
  * Rounded rectangle symbol path.
  *

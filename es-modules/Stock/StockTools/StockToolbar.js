@@ -11,10 +11,9 @@
  *
  * */
 'use strict';
-import U from '../../Core/Utilities.js';
 import AST from '../../Core/Renderer/HTML/AST.js';
 import StockToolsUtilities from './StockToolsUtilities.js';
-const { addEvent, createElement, css, defined, fireEvent, getStyle, isArray, merge, pick } = U;
+import { addEvent, createElement, css, defined, fireEvent, getStyle, isArray, merge, pick } from '../../Shared/Utilities.js';
 const { shallowArraysEqual } = StockToolsUtilities;
 /* *
  *
@@ -567,7 +566,7 @@ class Toolbar {
     getIconsURL() {
         return this.chart.options.navigation.iconsURL ||
             this.options.iconsURL ||
-            'https://code.highcharts.com/12.5.0/gfx/stock-icons/';
+            'https://code.highcharts.com/12.5.0-modified/gfx/stock-icons/';
     }
 }
 Toolbar.prototype.classMapping = {

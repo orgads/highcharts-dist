@@ -15,8 +15,7 @@ import A from '../Core/Animation/AnimationUtilities.js';
 const { animObject } = A;
 import D from '../Core/Defaults.js';
 const { getOptions } = D;
-import U from '../Core/Utilities.js';
-const { addEvent, defined, erase, extend, merge, pick, removeEvent, wrap } = U;
+import { addEvent, defined, erase, extend, isObject, merge, pick, removeEvent, wrap } from '../Shared/Utilities.js';
 /* *
  *
  *  Constants
@@ -198,13 +197,15 @@ function onChartRedraw() {
  * @internal
  */
 function onPointAfterInit() {
-    const point = this, colorOptions = point.options.color;
+    const point = this, colorOptions = (point.color || point.options.color);
     // Only do this if we have defined a specific color on this point. Otherwise
     // we will end up trying to re-add the series color for each point.
-    if (colorOptions && colorOptions.pattern) {
+    if (colorOptions &&
+        (colorOptions.pattern ||
+            colorOptions.patternIndex !== void 0)) {
         // Move path definition to object, allows for merge with series path
         // definition
-        if (typeof colorOptions.pattern.path === 'string') {
+        if (typeof colorOptions.pattern?.path === 'string') {
             colorOptions.pattern.path = {
                 d: colorOptions.pattern.path
             };
@@ -458,7 +459,7 @@ function rendererAddPattern(options, animation) {
     pattern.id = id;
     // Use an SVG path for the pattern
     if (options.path) {
-        path = U.isObject(options.path) ?
+        path = isObject(options.path) ?
             options.path :
             { d: options.path };
         // The background
